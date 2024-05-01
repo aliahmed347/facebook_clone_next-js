@@ -1,29 +1,17 @@
 "use client";
 import { Tooltip } from "@material-tailwind/react";
-import {
-  IconBell,
-  IconBrandMessenger,
-  IconDeviceTv,
-  IconDeviceTvOld,
-  IconFriends,
-  IconHome,
-  IconMessage,
-  IconMessageCircle2,
-  IconSearch,
-  IconSmartHome,
-  IconUsersGroup,
-} from "@tabler/icons-react";
+import { IconBell, IconBrandMessenger, IconSearch } from "@tabler/icons-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import NavbarItems from "../../../lib/navbarItems";
+import NavbarItems from "../../../utils/navbarItems";
 import { usePathname } from "next/navigation";
 import { AiFillMessage } from "react-icons/ai";
 import { BiSolidMessageRoundedDots } from "react-icons/bi";
 
 const Navbar = () => {
   const pathname = usePathname();
-  console.log("🚀 ~ Navbar ~ pathname:", pathname);
+  // console.log("🚀 ~ Navbar ~ pathname:", pathname);
 
   return (
     <nav className="w-full py-2 px-4 sticky top-0 flex justify-between items-center bg-white shadow-[0_4px_12px_rgba(0,0,0,0.1)] ">
