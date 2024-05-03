@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head></head>
-      <body className={` ${inter.className} w-full bg-backgroundColor `}>
+      <body className={`${inter.className} w-full bg-backgroundColor `}>
         {children}
       </body>
     </html>
