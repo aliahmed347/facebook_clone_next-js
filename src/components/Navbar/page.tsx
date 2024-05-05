@@ -89,6 +89,13 @@ const Navbar = () => {
             <IconBell size={24} className="text-primaryText" />
           </button>
         </Tooltip>
+        <Image
+          src="/asset/images/profile.png"
+          alt="user"
+          width={35}
+          height={35}
+          className="cursor-pointer"
+        />
       </div>
     </nav>
   );

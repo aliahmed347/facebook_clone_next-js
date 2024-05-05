@@ -18,6 +18,7 @@ const Post = () => {
             alt="user"
             width={35}
             height={35}
+            className="cursor-pointer"
           />
           <div className="">
             <h4 className="text-sm font-medium cursor-pointer  hover:underline ">
@@ -31,7 +32,7 @@ const Post = () => {
       </div>
       <div className="w-full">
         <img
-          src="asset/uploads/posts_media/postpic2.jpg"
+          src="asset/uploads/posts_media/postpic3.jpg"
           className="w-full h-auto"
         />
       </div>

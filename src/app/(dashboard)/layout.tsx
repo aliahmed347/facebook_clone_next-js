@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
 import LeftSidebar from "@/components/LeftSidebar/page";
 import RightSidebar from "@/components/RightSidebar/page";
 import Navbar from "@/components/Navbar/page";
 import { Suspense } from "react";
 
-const inter = Inter({ subsets: ["latin"] });
+const poppins = Poppins({ subsets: ["latin"], weight: "400" });
 
 export const metadata: Metadata = {
   title: "Facebook",
@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head></head>
-      <body className={` ${inter.className} w-full bg-backgroundColor `}>
+      <body className={` ${poppins.className} w-full bg-backgroundColor `}>
         <header className="relative h-16 ">
           <Suspense fallback={<p>Loading feed...</p>}>
             <Navbar />

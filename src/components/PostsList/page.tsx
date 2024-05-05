@@ -3,7 +3,7 @@ import Post from "../Post/page";
 
 const PostsList = () => {
   return (
-    <div className="w-full mt-3 flex justify-center items-center gap-3 flex-col  ">
+    <div className="w-full  mt-3 flex justify-center items-center gap-3 flex-col  ">
       <Post />
       <Post />
     </div>

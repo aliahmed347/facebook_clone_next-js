@@ -9,7 +9,7 @@ import React from "react";
 const Page = () => {
   return (
     <section className="w-full  flex justify-center items-center py-3 ">
-      <div className="w-3/4 h-[calc(100vh-88px)] overflow-auto ">
+      <div className="w-3/4 h-[calc(100vh-88px)] overflow-y-auto  no-scrollbar ">
         <CreatePost />
         <PostsList />
       </div>

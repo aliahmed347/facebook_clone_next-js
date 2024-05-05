@@ -19,7 +19,7 @@ const LeftSidebar = () => {
         {leftSidebarItems.map((item, index) => (
           <li
             key={index}
-            className="flex justify-start items-center gap-3 hover:bg-[#E4E6E9] px-2 py-2 cursor-pointer "
+            className="flex justify-start items-center gap-3 hover:bg-[#E4E6E9] px-2 py-2 cursor-pointer rounded-lg"
           >
             <Image
               src={`/asset/images${item.icon}`}
