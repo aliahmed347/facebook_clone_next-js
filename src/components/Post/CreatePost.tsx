@@ -1,6 +1,6 @@
 "use client";
-import Modal from "@/Elements/Modal";
-import { Button, Card, Typography } from "@material-tailwind/react";
+import Modal from "@/components/Elements/Modal";
+import { Button, Card, IconButton, Typography } from "@material-tailwind/react";
 import { IconLibraryPhoto, IconPhotoVideo, IconX } from "@tabler/icons-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,7 +9,8 @@ import Dropzone from "react-dropzone";
 
 const CreatePost = () => {
   const [createPost, setCreatePost] = useState({
-    isOpen: true,
+    isOpen: false,
+    isMedia: false,
   });
   return (
     <>
@@ -48,28 +49,58 @@ const CreatePost = () => {
                 placeholder="Whats on your mind Ali Ahmed?"
                 className=" h-40 w-full resize-none outline-none border-primary "
               ></textarea>
-              <div className="">
-                <Dropzone
-                  onDrop={(acceptedFiles) => console.log(acceptedFiles)}
-                >
-                  {({ getRootProps, getInputProps }) => (
-                    <section className="w-full p-2 border-[1px] border-blue-gray-700 rounded-xl relative ">
-                      <div className="p-1 absolute border-backgroundColor bg-white rounded-full z-auto right-4 top-4 cursor-pointer border-[1px] hover:bg-backgroundColor hover:border-blue-gray-700 hover:border-[1px]  ">
-                        <IconX className="" />
-                      </div>
-                      <div
-                        {...getRootProps()}
-                        className="bg-backgroundColor  h-[200px] flex justify-center items-center flex-col rounded-xl hover:bg-[#EAEBED] cursor-pointer "
-                      >
-                        <input {...getInputProps()} />
-                        <IconLibraryPhoto />
-                        <p className="font-semibold">Add photo/video</p>
-                        <span className="">or drag and drop</span>
-                      </div>
-                    </section>
-                  )}
-                </Dropzone>
-              </div>
+              {createPost.isMedia ? (
+                <div className="">
+                  <Dropzone
+                    onDrop={(acceptedFiles) => console.log(acceptedFiles)}
+                  >
+                    {({ getRootProps, getInputProps }) => (
+                      <section className="w-full p-2 border-[1px] border-blue-gray-700 rounded-xl relative ">
+                        <div className="p-1 absolute border-backgroundColor bg-white rounded-full z-auto right-4 top-4 cursor-pointer border-[1px] hover:bg-backgroundColor hover:border-blue-gray-700 hover:border-[1px]  ">
+                          <IconX
+                            className=""
+                            onClick={() =>
+                              setCreatePost((pre) => {
+                                return {
+                                  ...pre,
+                                  isMedia: false,
+                                };
+                              })
+                            }
+                          />
+                        </div>
+                        <div
+                          {...getRootProps()}
+                          className="bg-backgroundColor  h-[200px] flex justify-center items-center flex-col rounded-xl hover:bg-[#EAEBED] cursor-pointer "
+                        >
+                          <input {...getInputProps()} />
+                          <IconLibraryPhoto />
+                          <p className="font-semibold">Add photo/video</p>
+                          <span className="">or drag and drop</span>
+                        </div>
+                      </section>
+                    )}
+                  </Dropzone>
+                </div>
+              ) : (
+                <div className="p-2 border-[1px] border-blue-gray-700 rounded-xl flex justify-around ">
+                  <p className="font-semibold">Add to your post</p>
+                  <div className="">
+                    <IconLibraryPhoto
+                      size={25}
+                      className="text-green-600 cursor-pointer"
+                      onClick={() =>
+                        setCreatePost((pre) => {
+                          return {
+                            ...pre,
+                            isMedia: true,
+                          };
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+              )}
               <Button fullWidth className="bg-primary mt-2">
                 post
               </Button>

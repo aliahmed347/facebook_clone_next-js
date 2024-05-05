@@ -22,22 +22,22 @@ export default function RootLayout({
     <html lang="en">
       <head></head>
       <body className={` ${inter.className} w-full bg-backgroundColor `}>
-        <header className="relative">
+        <header className="relative h-16 ">
           <Suspense fallback={<p>Loading feed...</p>}>
             <Navbar />
           </Suspense>
         </header>
-        <main className="px-4 w-full flex items-start  ">
+        <main className="px-4 w-full flex items-start h-[calc(100vh-88px)] ">
           <div className="w-1/4">
             <LeftSidebar />
           </div>
-          <div className="w-2/4">{children}</div>
+          <div className="w-2/4 h-[calc(100vh-88px)] ">{children}</div>
           <div className="w-1/4">
             <RightSidebar />
           </div>
         </main>
-        <footer>
-          <p>Copyright clam @ {Date()}</p>
+        <footer className="h-2">
+          {/* <p>Copyright clam @ {Date()}</p> */}
         </footer>
       </body>
     </html>
