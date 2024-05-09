@@ -1,3 +1,5 @@
+
+
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
@@ -18,25 +20,34 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // const [activeLeftSidebar, setActiveLeftSidebar] = useState(true);
   return (
     <html lang="en">
       <head></head>
       <body className={` ${poppins.className} w-full bg-backgroundColor `}>
-        <header className="relative h-16 ">
+        <header className="relative h-28 lg:h-16  ">
           <Suspense fallback={<p>Loading feed...</p>}>
-            <Navbar />
+            <Navbar
+            // active={activeLeftSidebar}
+            // setActive={setActiveLeftSidebar}
+            />
           </Suspense>
         </header>
-        <main className="px-4 w-full flex items-start h-[calc(100vh-88px)] ">
-          <div className="w-1/4">
-            <LeftSidebar />
+        <main className="px-4 w-full flex items-start h-[calc(100vh-136px)] xl:h-[calc(100vh-88px)] relative ">
+          <div className="w-1/2 lg:w-1/4 h-full p-4 left-0 -top-2 -bottom-0 hidden lg:block  absolute lg:relative bg-backgroundColor lg:bg-transparent  ">
+            <LeftSidebar
+            // active={activeLeftSidebar}
+            // setActive={setActiveLeftSidebar}
+            />
           </div>
-          <div className="w-2/4 h-[calc(100vh-88px)] ">{children}</div>
-          <div className="w-1/4">
+          <div className="w-full lg:w-3/4 xl:w-2/4  h-[calc(100vh-136px)] xl:h-[calc(100vh-88px)]  ">
+            {children}
+          </div>
+          <div className=" lg:w-1/4 hidden lg:block ">
             <RightSidebar />
           </div>
         </main>
-        <footer className="h-2">
+        <footer className="h-2 ">
           {/* <p>Copyright clam @ {Date()}</p> */}
         </footer>
       </body>
