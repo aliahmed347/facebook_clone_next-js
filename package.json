@@ -11,13 +11,21 @@
   "dependencies": {
     "@material-tailwind/react": "^2.1.9",
     "@tabler/icons-react": "^3.2.0",
+    "axios": "^1.6.8",
+    "bcrypt": "^5.1.1",
+    "formik": "^2.4.6",
     "http-status-codes": "^2.3.0",
+    "js-cookie": "^3.0.5",
     "mongoose": "^8.3.4",
     "next": "14.2.3",
+    "nodemailer": "^6.9.13",
     "react": "^18",
     "react-dom": "^18",
     "react-dropzone": "^14.2.3",
-    "react-icons": "^5.1.0"
+    "react-icons": "^5.1.0",
+    "react-redux": "^9.1.2",
+    "uuid": "^9.0.1",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@types/node": "^20",

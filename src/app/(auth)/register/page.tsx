@@ -10,13 +10,12 @@ import {
 } from "@material-tailwind/react";
 import { IconEye } from "@tabler/icons-react";
 import Image from "next/image";
-import Link from "next/link";
 import React from "react";
 
-const Login = () => {
+const Register = () => {
   return (
-    <section className="w-full min-h-screen flex gap-3 lg:gap-0 flex-col md:flex-row justify-evenly items-center p-5 md:p-10 ">
-      <div className=" w-full md:w-1/2 flex md:p-6 flex-col justify-start items-start">
+    <section className="w-full min-h-screen flex gap-3 lg:gap-0 flex-col lg:flex-row justify-evenly items-center p-5 md:p-10 ">
+      <div className=" w-full lg:w-1/2 flex md:p-6 flex-col justify-start items-start">
         <Image
           src="asset/images/facebook_logo.svg"
           alt="logo"
@@ -28,7 +27,7 @@ const Login = () => {
           Facebook helps you connect and share with the people in your life.
         </h2>
       </div>
-      <div className="w-full md:w-2/5 flex justify-center items-center">
+      <div className="w-full lg:w-1/2 flex justify-center items-center">
         <Card
           className="shadow-[0px_2px_8px_0px_rgba(99,99,99,0.2)] w-full px-5 bg-white rounded-xl "
           color="transparent"
@@ -36,6 +35,28 @@ const Login = () => {
         >
           <form className="mt-8 mb-2   w-full  max-w-screen-lg xl:max-w-screen-xl ">
             <div className="mb-1 flex flex-col gap-6 w-full ">
+              <div className="w-full flex flex-col sm:flex-row gap-y-5 gap-x-2 ">
+                <Input
+                  size="lg"
+                  placeholder="John"
+                  // className="w-full"
+                  width='50%'
+                  label="First Name"
+                  labelProps={{
+                    className: "",
+                  }}
+                />
+                <Input
+                  size="lg"
+                  placeholder="Dou"
+                  // className="w-full"
+                  width='50%'
+                  label="Last Name"
+                  labelProps={{
+                    className: "",
+                  }}
+                />
+              </div>
               <Input
                 size="lg"
                 placeholder="name@mail.com"
@@ -57,6 +78,24 @@ const Login = () => {
                   className: "",
                 }}
               />
+
+              <Input
+                type="date"
+                size="lg"
+                placeholder="Date of birth"
+                // style={{}}
+                className="  "
+                label="Date of birth"
+                labelProps={{
+                  className: "",
+                }}
+              />
+
+              <div className="flex flex-wrap justify-center gap-y-1 gap-x-2 ">
+                <Radio name="type" label="Male" defaultChecked />
+                <Radio name="type" label="Female" />
+                <Radio name="type" label="Custom" />
+              </div>
             </div>
             {/* <Checkbox
           label={
@@ -76,25 +115,18 @@ const Login = () => {
           }
           containerProps={{ className: "-ml-2.5" }}
         /> */}
-            <Button className="mt-6 bg-primary " fullWidth>
-              Log in
-            </Button>
             <Typography
               // color="gray"
-              className="mt-4 text-center font-light text-sm text-primary"
+              className="mt-4 text-center font-light text-sm text-secondaryText"
             >
-              <a href="#" className="font-medium ">
-                Forget{" "}
+              <a href="/login" className="font-medium text-primary">
+                Log In{" "}
               </a>
-              Your Password
+              if you have already account
             </Typography>
-
-            <hr className="mt-2" />
-            <Link href="/register">
-              <Button className="mt-6 py-4 bg-green-500 " fullWidth>
-                Create account
-              </Button>
-            </Link>
+            <Button className="mt-6 bg-primary " fullWidth>
+              Create account
+            </Button>
           </form>
         </Card>
       </div>
@@ -102,4 +134,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;
