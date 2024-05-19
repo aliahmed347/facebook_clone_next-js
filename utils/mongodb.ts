@@ -1,7 +1,9 @@
+import USER from "../src/models/User";
 import mongoose, { ConnectOptions } from "mongoose";
 
 const connectionOptions = {
   // Optional: Other connection options (e.g., useCreateIndex, useFindAndModify)
+  dbName: "facebook",
 } as ConnectOptions;
 
 // {
@@ -18,12 +20,10 @@ const connectDB = async () => {
     console.log("Database is already connected");
   } else {
     try {
-      await mongoose.connect(
-        process.env.MONGODB_URI || "mongodb://localhost:27017/facebook",
-        connectionOptions
-      );
-      console.log("MongoDB is connecting");
+      await mongoose.connect("mongodb://localhost:27017", connectionOptions);
+      USER.find();
 
+      console.log("MongoDB is connected");
       global.connectDB = true; // Set a flag to prevent re-connection
     } catch (error) {
       console.error("Error connecting to MongoDB:", error);

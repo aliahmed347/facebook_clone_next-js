@@ -25,7 +25,9 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    // require("daisyui")
+  ],
 };
 export default config;
 
@@ -53,5 +55,7 @@ module.exports = withMT({
       },
     },
   },
-  plugins: [],
+  plugins: [
+    // require("daisyui")
+  ],
 });
