@@ -16,10 +16,11 @@ import Link from "next/link";
 import React, { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { sendMail } from "../../../../lib/sendMail";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [error, setError] = useState<string>(false);
+  const [error, setError] = useState<string>("");
   const router = useRouter();
   const validationSchema = yup.object({
     email: yup
@@ -88,9 +89,11 @@ const Login = () => {
               handleSubmit();
             }}
           >
-            <div className="relative block w-full py-2 px-4 mb-4 text-base leading-5 text-white bg-red-500 rounded-lg opacity-100 font-regular">
-              {error}
-            </div>
+            {error && (
+              <div className="relative block w-full py-2 px-4 mb-4 text-base leading-5 text-white bg-red-500 rounded-lg opacity-100 font-regular">
+                {error}
+              </div>
+            )}
             <div className="mb-1 flex flex-col gap-6 w-full ">
               <Input
                 size="lg"

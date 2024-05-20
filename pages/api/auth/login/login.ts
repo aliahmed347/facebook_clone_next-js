@@ -18,7 +18,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const user: any = await USER.findOne({
       email,
-    });
+    }).select("+password");
+
     console.log("🚀 ~ handler ~ user:", user);
 
     if (!user) {
@@ -37,11 +38,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const token = getToken(user._id);
 
+    user.password = undefined;
+
     res.status(StatusCodes.OK).json({
-      user: {
-        ...user._doc,
-        password: undefined,
-      },
+      user,
       token,
     });
   } catch (error) {

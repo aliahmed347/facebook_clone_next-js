@@ -13,14 +13,105 @@ import axios from "axios";
 import { useFormik } from "formik";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as yup from "yup";
 import { sendMail } from "../../../../lib/sendMail";
+import { AnyBulkWriteOperation } from "mongoose";
 
 const Register = () => {
   const [step, setStep] = useState<number>(0);
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [otp, setOtp] = useState("");
+  const inputs: any = useRef([]);
+  const [error, setError] = useState<string>("");
+  const [isResend, setIsResend] = useState(false); // Flag for button state
+  const [remainingTime, setRemainingTime] = useState(0); // Timer in seconds (5 minutes)
+  let timerId: string | number | NodeJS.Timeout | undefined; // Declare timerId outside handleSubmit
+
   const router = useRouter();
+
+  useEffect(() => {
+    return () => {
+      if (timerId) {
+        clearInterval(timerId);
+      }
+    };
+  }, []); // Empty dependency array ensures cleanup on unmount
+  const handleOtpChange = (event: any) => {
+    const newChar = event.target.value.slice(0, 1); // Get only the new character
+    const newOtp = otp.slice(0, event.target.id.slice(-1)) + newChar; // Update OTP state with new character
+
+    setOtp(newOtp);
+
+    const currentInputIndex = inputs.current.indexOf(event.target);
+    if (
+      newOtp.length === currentInputIndex + 1 &&
+      inputs.current[currentInputIndex + 1]
+    ) {
+      inputs.current[currentInputIndex + 1].focus();
+    } else if (newOtp.length < currentInputIndex + 1) {
+      // Focus on the previous input if backspacing in a non-empty box
+      inputs.current[currentInputIndex - 1].focus();
+    }
+  };
+
+  const handleBackspace = (event: any) => {
+    if (event.key === "Backspace" && otp.length > 0) {
+      setOtp(otp.slice(0, -1));
+      inputs.current[inputs.current.indexOf(event.target) - 1].focus();
+    }
+  };
+
+  const getFormattedTime = () => {
+    const minutes = Math.floor(remainingTime / 60);
+    const seconds = remainingTime % 60;
+    return `${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}`;
+  };
+
+  const handleSubmitOTP = async () => {
+    if (otp.length === 6) {
+      // Simulate OTP submission (replace with your API call)
+      console.log("Submitting OTP:", otp);
+      try {
+        await axios({
+          url: "api/email/verifyRegistrationOTP",
+          method: "POST",
+          data: {
+            email: values.email,
+            otp,
+          },
+        });
+
+        createUser();
+      } catch (error: any) {
+        console.log("🚀 ~ handleSubmitOTP ~ error:", error);
+        setError(error.response.data.error);
+      }
+    } else {
+      console.log("Please enter all 6 digits of the OTP");
+    }
+  };
+
+  const handleResendOtp = async () => {
+    await setIsResend(true); // Disable button and start timer
+    await setRemainingTime(180); // Reset timer for a new submission
+    await sendOTP();
+    timerId = setInterval(() => {
+      setRemainingTime((prevTime) => {
+        if (prevTime === 1) {
+          clearInterval(timerId);
+          setIsResend(false); // Re-enable button after timer completes
+          // Consider handling timeout scenario (e.g., display message)
+        }
+        return prevTime - 1;
+      });
+    }, 1000); // Update timer every second
+
+    // Implement resend OTP logic here (e.g., API call)
+    console.log("Resend OTP clicked");
+  };
 
   const validationSchema = yup.object({
     first_name: yup.string().required("First name is require"),
@@ -44,27 +135,55 @@ const Register = () => {
       DOB: "",
     },
     onSubmit: (values) => {
-      // console.log("🚀 ~ Register ~ values:", values);
-
-      const createUser = async () => {
-        try {
-          const user = await axios({
-            url: "api/auth/register/createAccount",
-            method: "POST",
-            data: values,
-          });
-          console.log("🚀 ~ createUser ~ user:", user.data);
-          router.push("/login");
-        } catch (error) {
-          console.log("🚀 ~ createUser ~ error:", error);
-        }
-      };
-      createUser();
-      // sendMail();
-
-      // setStep(1);
+      sendOTP();
     },
   });
+
+  const createUser = async () => {
+    try {
+      const user = await axios({
+        url: "api/auth/register/createAccount",
+        method: "POST",
+        data: values,
+      });
+      console.log("🚀 ~ createUser ~ user:", user.data);
+      router.push("/login");
+    } catch (error) {
+      console.log("🚀 ~ createUser ~ error:", error);
+    }
+  };
+
+  const sendOTP = async () => {
+    try {
+      const OTP: any = await axios({
+        url: "api/email/sendRegistrationOTP",
+        method: "POST",
+        data: { email: values.email },
+      });
+      setStep(1);
+      if (remainingTime !== 0) {
+        handleResendOtp();
+      }
+      // sessionStorage.setItem("authToken", user.data.token);
+    } catch (error: any) {
+      setError(error.response.data.error);
+
+      console.log("🚀 ~ createUser ~ error:", error);
+    }
+  };
+
+  function maskEmail(email: string) {
+    const atIndex = email.indexOf("@");
+    const beforeAt = email.slice(0, atIndex); // Extract characters before "@"
+    const afterAt = email.slice(atIndex + 1); // Extract characters after "@"
+
+    // Limited masking (replace half the characters):
+    const maskedBeforeAt = beforeAt.replace(/./g, (match, index) =>
+      index < Math.floor(beforeAt.length / 3) ? match : "*"
+    );
+
+    return `${maskedBeforeAt}@${afterAt}`;
+  }
 
   return (
     <section className="w-full min-h-screen flex gap-3 lg:gap-0 flex-col lg:flex-row justify-evenly items-center p-5 md:p-10 ">
@@ -97,7 +216,11 @@ const Register = () => {
                 handleSubmit();
               }}
             >
-              {/* <div className="relative block w-full p-4 mb-4 text-base leading-5 text-white bg-green-400 rounded-lg opacity-100 font-regular"></div > */}
+              {error && (
+                <div className="relative block w-full py-2 px-4 mb-4 text-base leading-5 text-white bg-red-500 rounded-lg opacity-100 font-regular">
+                  {error}
+                </div>
+              )}
               <div className="mb-1 flex flex-col gap-6 w-full ">
                 <div className="w-full flex flex-col sm:flex-row gap-y-5 gap-x-2 ">
                   <Input
@@ -280,22 +403,79 @@ const Register = () => {
         )}
         {step === 1 && (
           <Card
-            className="shadow-[0px_2px_8px_0px_rgba(99,99,99,0.2)] w-full px-5 bg-white rounded-xl "
+            className="shadow-[0px_2px_8px_0px_rgba(99,99,99,0.2)] w-full px-5 py-4 bg-white rounded-xl "
             color="transparent"
             shadow={true}
             placeholder={undefined}
             onPointerEnterCapture={undefined}
             onPointerLeaveCapture={undefined}
           >
-            <div className="w-full">
+            <form className="w-full text-center">
+              {error && (
+                <div className="relative block w-full py-2 px-4 mb-4 text-base leading-5 text-white bg-red-500 rounded-lg opacity-100 font-regular">
+                  {error}
+                </div>
+              )}
+              <h1 className="text-2xl font-bold">OTP Verification</h1>
+
               <h1>
-                A 6 digit email has been sent to your ba********@gmail.com email
+                {`A 6 digit email has been sent to your ${maskEmail(
+                  values.email
+                )}
+                email`}
               </h1>
               <span>
                 pleas check your inbox and past the verification code given
                 below
               </span>
-            </div>
+              <div
+                id="otp"
+                className="flex flex-row justify-center text-center px-2 mt-5"
+              >
+                {[1, 2, 3, 4, 5, 6].map((i) => (
+                  <input
+                    key={i}
+                    className="m-2 border h-10 w-10 text-center form-control rounded"
+                    type="text"
+                    id={`otp-${i}`}
+                    maxLength={1}
+                    value={otp.charAt(i - 1) || ""} // Set initial value from OTP state
+                    onChange={handleOtpChange}
+                    onKeyDown={handleBackspace}
+                    ref={(el: any) => (inputs.current[i - 1] = el)} // Store references
+                  />
+                ))}
+              </div>
+              <div className="flex justify-between items-center text-center mt-5">
+                {isResend ? (
+                  <div className="text-center mt-2 text-gray-700">
+                    Request new OTP after: {getFormattedTime()}
+                  </div>
+                ) : (
+                  <div className="text-center mt-2 text-gray-700">
+                    <span className="text-primary" onClick={handleResendOtp}>
+                      Resend
+                    </span>{" "}
+                    otp if you don,t receive
+                  </div>
+                )}
+
+                <button
+                  className={
+                    otp.length === 6
+                      ? "bg-blue-700 text-white px-4 py-2 rounded hover:bg-primary cursor-pointer "
+                      : "bg-gray-400 text-white px-4 py-2 rounded cursor-not-allowed"
+                  }
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleSubmitOTP();
+                  }}
+                  type="submit"
+                >
+                  Submit OTP
+                </button>
+              </div>
+            </form>
           </Card>
         )}
       </div>
