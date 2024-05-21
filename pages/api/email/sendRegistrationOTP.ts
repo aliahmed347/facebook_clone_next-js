@@ -9,7 +9,7 @@ import USER from "@/models/User";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== "POST") {
-    res.status(StatusCodes.BAD_REQUEST).json({
+    return res.status(StatusCodes.BAD_REQUEST).json({
       error: "method not allowed",
     });
   }
@@ -17,7 +17,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const { email } = req.body;
 
     if (!email) {
-      res.status(StatusCodes.BAD_REQUEST).json({
+      return res.status(StatusCodes.BAD_REQUEST).json({
         error: "Email musts be require",
       });
     }
@@ -54,7 +54,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     res.status(StatusCodes.OK).json(true);
   } catch (error) {
     console.log("🚀 ~ handler ~ error:", error);
-    res.status(StatusCodes.BAD_REQUEST).json({
+    return res.status(StatusCodes.BAD_REQUEST).json({
       error: "Error from server",
       serverError: error,
     });

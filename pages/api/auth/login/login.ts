@@ -7,7 +7,7 @@ import { getToken } from "../../../../utils/authToken";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== "POST") {
-    res.status(StatusCodes.BAD_REQUEST).json({
+    return res.status(StatusCodes.BAD_REQUEST).json({
       error: "method not allowed",
     });
   }
@@ -41,12 +41,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     user.password = undefined;
 
     res.status(StatusCodes.OK).json({
-      user,
-      token,
+      user: { ...user, token },
     });
   } catch (error) {
     console.log("🚀 ~ handler ~ error:", error);
-    res.status(StatusCodes.BAD_REQUEST).json({
+    return res.status(StatusCodes.BAD_REQUEST).json({
       error: "Error from server",
       serverError: error,
     });
