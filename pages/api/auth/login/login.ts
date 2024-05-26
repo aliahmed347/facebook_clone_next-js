@@ -20,7 +20,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       email,
     }).select("+password");
 
-    console.log("🚀 ~ handler ~ user:", user);
 
     if (!user) {
       return res.status(StatusCodes.BAD_REQUEST).json({

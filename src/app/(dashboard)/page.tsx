@@ -8,27 +8,24 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
+import getSession from "../../../utils/getSession";
 
 const Page = () => {
   const router = useRouter();
   useEffect(() => {
-    const validateToken = async () => {
+    const validateSession = async () => {
+      // setLoading(true);
       try {
-        const token = sessionStorage.getItem("authToken");
-        await axios({
-          url: "/api/auth/validateToken",
-          method: "POST",
-          headers: {
-            token,
-          },
-        });
+        const user = await getSession();
+        // setLoading(false);
       } catch (error) {
+        // setLoading(false);
+        await router.push("/");
         console.log("🚀 ~ validateToken ~ error:", error);
-        router.push("/login");
       }
     };
 
-    validateToken();
+    validateSession();
   }, []);
   return (
     <section className="w-  full  flex justify-center items-center py-3 ">

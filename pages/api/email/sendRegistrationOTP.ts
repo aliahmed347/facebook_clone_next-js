@@ -2,8 +2,8 @@ import { StatusCodes } from "http-status-codes";
 import { NextApiRequest, NextApiResponse } from "next";
 import randomize from "randomatic";
 
-import { sendMail } from "../../../lib/sendMail";
-import { RegistrationTemplate } from "../../../lib/EmailTamplates/emailTemplate";
+import { sendMail } from "../../../utils/sendMail";
+import { RegistrationTemplate } from "../../../src/components/EmailTamplates/emailTemplate";
 import RegistrationOTP from "@/models/RegistrationOTP";
 import USER from "@/models/User";
 

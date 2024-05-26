@@ -2,16 +2,13 @@ import { StatusCodes } from "http-status-codes";
 import { NextApiRequest, NextApiResponse } from "next";
 import { verifyToken } from "../../../utils/authToken";
 import USER from "@/models/User";
+import { connectDB } from "@/../utils/mongodb";
 import { JwtPayload } from "jsonwebtoken";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  if (req.method !== "POST") {
-    return res.status(StatusCodes.BAD_REQUEST).json({
-      error: "method not allowed",
-    });
-  }
   try {
     const token: any = req.headers["token"];
+    await connectDB();
 
     if (!token) {
       return res

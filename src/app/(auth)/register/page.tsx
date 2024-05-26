@@ -5,7 +5,6 @@ import {
   Checkbox,
   Input,
   Radio,
-  Tooltip,
   Typography,
 } from "@material-tailwind/react";
 import { IconEye, IconEyeClosed } from "@tabler/icons-react";
@@ -15,8 +14,8 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import * as yup from "yup";
-import { sendMail } from "../../../../lib/sendMail";
-import { AnyBulkWriteOperation } from "mongoose";
+import { authOptions } from "../../../../pages/api/auth/[...nextauth]";
+import getSession from "../../../../utils/getSession";
 
 const Register = () => {
   const [loading, setLoading] = useState<boolean>(true);
@@ -32,17 +31,10 @@ const Register = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const validateToken = async () => {
+    const validateSession = async () => {
       try {
+        const user = await getSession();
         setLoading(true);
-        const token = sessionStorage.getItem("authToken");
-        await axios({
-          url: "/api/auth/validateToken",
-          method: "POST",
-          headers: {
-            token,
-          },
-        });
         await router.push("/");
         setLoading(false);
       } catch (error) {
@@ -51,7 +43,7 @@ const Register = () => {
       }
     };
 
-    validateToken();
+    validateSession();
   }, []);
 
   useEffect(() => {

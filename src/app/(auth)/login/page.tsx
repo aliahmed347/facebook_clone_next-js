@@ -1,41 +1,26 @@
 "use client";
-import {
-  Button,
-  Card,
-  Checkbox,
-  Input,
-  Radio,
-  Tooltip,
-  Typography,
-} from "@material-tailwind/react";
+import { Button, Card, Input, Typography } from "@material-tailwind/react";
 import * as yup from "yup";
 import { IconEye, IconEyeClosed, IconEyeOff } from "@tabler/icons-react";
 import { useFormik } from "formik";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useRouter } from "next/navigation";
-import { sendMail } from "../../../../lib/sendMail";
+import { signIn } from "next-auth/react";
+
+import getSession from "../../../../utils/getSession";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(true);
-
   useEffect(() => {
-    const validateToken = async () => {
+    const validateSession = async () => {
       try {
+        const user = await getSession();
         setLoading(true);
-        const token = sessionStorage.getItem("authToken");
-        await axios({
-          url: "/api/auth/validateToken",
-          method: "POST",
-          headers: {
-            token,
-          },
-        });
         await router.push("/");
         setLoading(false);
       } catch (error) {
@@ -44,7 +29,7 @@ const Login = () => {
       }
     };
 
-    validateToken();
+    validateSession();
   }, []);
 
   const validationSchema = yup.object({
@@ -67,18 +52,23 @@ const Login = () => {
     onSubmit: (values) => {
       const logUser = async () => {
         try {
-          const user: any = await axios({
-            url: "api/auth/login/login",
-            method: "POST",
-            data: values,
+          setLoading(true);
+          const data: any = await signIn("credentials", {
+            email: values.email,
+            password: values.password,
+            redirect: false,
+            callbackUrl: "/",
           });
 
-          sessionStorage.setItem("authToken", user.data.user.token);
-
-          router.push("/"); // Navigate to /feed
+          if (data.ok) {
+            return router.push("/");
+          }
+          setError(data.error || "");
         } catch (error: any) {
           setError(error.response.data.error);
           console.log("🚀 ~ createUser ~ error:", error);
+        } finally {
+          setLoading(false);
         }
       };
       logUser();
