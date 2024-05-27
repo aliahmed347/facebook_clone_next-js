@@ -13,7 +13,7 @@ const Modal: React.FC<ModalProps> = ({ children }) => {
           {/*content*/}
         </div>
       </div>
-      <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+      <div className="opacity-40 fixed inset-0 z-40 bg-black"></div>
     </>
   );
 };

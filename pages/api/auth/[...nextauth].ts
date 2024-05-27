@@ -48,6 +48,25 @@ export const authOptions: any = {
       },
     }),
   ],
+
+  callbacks: {
+    async jwt({ token, user }: { token: any; user: any }) {
+      // Add user data to the token
+      if (user) {
+        const { password, ...userWithoutPassword } = user._doc;
+        token.user = userWithoutPassword;
+      }
+      return token;
+    },
+    async session({ session, token }: { session: any; token: any }) {
+      // Add token data to the session
+      if (token) {
+        session.user = token.user;
+      }
+      return session;
+    },
+  },
+
   pages: {
     signIn: "/auth",
   },
@@ -56,6 +75,11 @@ export const authOptions: any = {
     secret: process.env.JWT_SECRET_KET,
   },
   secret: process.env.NEXT_AUTH_SECRET_KET,
+};
+
+const getUserByEmail = async (email: any) => {
+  const user = await USER.findOne({ email });
+  return user;
 };
 
 export default NextAuth(authOptions);

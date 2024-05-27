@@ -7,29 +7,29 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
-
-import getSession from "../../../../utils/getSession";
+import { getSession, signIn } from "next-auth/react";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(true);
+
   useEffect(() => {
-    const validateSession = async () => {
+    const validateUser = async () => {
+      setLoading(true);
       try {
-        const user = await getSession();
-        setLoading(true);
-        await router.push("/");
-        setLoading(false);
+        const session = await getSession();
+        if (session) {
+          router.push("/");
+        }
       } catch (error) {
-        setLoading(false);
-        console.log("🚀 ~ validateToken ~ error:", error);
+        console.log("🚀 ~ validateUser ~ error:", error);
+      } finally {
+        setLoading(true);
       }
     };
-
-    validateSession();
+    validateUser();
   }, []);
 
   const validationSchema = yup.object({

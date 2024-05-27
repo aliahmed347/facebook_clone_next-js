@@ -10,16 +10,18 @@ const getServerSession = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const session: any = await serverSession(req, res, authOptions);
 
-    if (!session) return null;
+    if (!session)
+      return res.status(StatusCodes.UNAUTHORIZED).json("Not signed in");
 
     const user = USER.findOne({ email: session?.user?.email });
 
-    if (!user) return null;
+    if (!user)
+      return res.status(StatusCodes.UNAUTHORIZED).json("Not signed in");
 
     return user;
   } catch (error) {
     console.log("🚀 ~ getServerSession ~ error:", error);
-    return null;
+    return res.status(StatusCodes.UNAUTHORIZED).json("Not signed in");
   }
 };
 

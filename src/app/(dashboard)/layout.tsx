@@ -1,5 +1,3 @@
-
-
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
@@ -7,6 +5,9 @@ import LeftSidebar from "@/components/LeftSidebar/page";
 import RightSidebar from "@/components/RightSidebar/page";
 import Navbar from "@/components/Navbar/page";
 import { Suspense } from "react";
+import { Flip, ToastContainer, Zoom } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import AuthProvider from "../../../utils/authProvider";
 
 const poppins = Poppins({ subsets: ["latin"], weight: "400" });
 
@@ -41,7 +42,19 @@ export default function RootLayout({
             />
           </div>
           <div className="w-full lg:w-3/4 xl:w-2/4  h-[calc(100vh-136px)] xl:h-[calc(100vh-88px)]  ">
-            {children}
+            <ToastContainer
+              position="bottom-left"
+              autoClose={5000}
+              hideProgressBar
+              newestOnTop={false}
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="light"
+              transition={Flip}
+            />
+            <AuthProvider>{children}</AuthProvider>
           </div>
           <div className=" lg:w-1/4 hidden lg:block ">
             <RightSidebar />

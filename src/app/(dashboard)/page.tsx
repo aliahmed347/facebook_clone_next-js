@@ -1,32 +1,30 @@
 "use client";
 import CreatePost from "@/components/Post/CreatePost";
-import Post from "@/components/Post/page";
 import PostsList from "@/components/PostsList/page";
-import { IconPhotoPlus, IconPhotoVideo } from "@tabler/icons-react";
-import axios from "axios";
-import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
-import getSession from "../../../utils/getSession";
+import React, { useEffect, useState } from "react";
+import { getSession, useSession } from "next-auth/react";
 
 const Page = () => {
+  const [user, setUser] = useState<any>({});
   const router = useRouter();
+
   useEffect(() => {
-    const validateSession = async () => {
-      // setLoading(true);
+    const validateUser = async () => {
       try {
-        const user = await getSession();
-        // setLoading(false);
+        const session = await getSession();
+        if (!session) {
+          router.push("/login");
+        }
+        setUser(session?.user);
       } catch (error) {
-        // setLoading(false);
-        await router.push("/");
-        console.log("🚀 ~ validateToken ~ error:", error);
+        console.log("🚀 ~ validateUser ~ error:", error);
+        router.push("/login");
       }
     };
-
-    validateSession();
+    validateUser();
   }, []);
+
   return (
     <section className="w-  full  flex justify-center items-center py-3 ">
       <div className="w-full lg:w-3/4 h-[calc(100vh-136px)] xl:h-[calc(100vh-88px)] overflow-y-auto  no-scrollbar ">
