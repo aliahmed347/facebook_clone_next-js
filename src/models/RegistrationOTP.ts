@@ -4,7 +4,7 @@ import { string } from "yup";
 const OTPSchema = new mongoose.Schema(
   {
     email: { type: String, require: true },
-    is_Expire: {
+    isExpire: {
       type: Boolean,
       default: false,
     },

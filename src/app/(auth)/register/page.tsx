@@ -16,9 +16,12 @@ import React, { useEffect, useRef, useState } from "react";
 import * as yup from "yup";
 import { authOptions } from "../../../../pages/api/auth/[...nextauth]";
 import { getSession } from "next-auth/react";
+import Loader from "@/components/loader";
 
 const Register = () => {
   const [loading, setLoading] = useState<boolean>(true);
+  const [loader, setLoader] = useState({ open: false, text: "" });
+
   const [step, setStep] = useState<number>(0);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [otp, setOtp] = useState("");
@@ -41,7 +44,7 @@ const Register = () => {
       } catch (error) {
         console.log("🚀 ~ validateUser ~ error:", error);
       } finally {
-        setLoading(true);
+        setLoading(false);
       }
     };
     validateUser();
@@ -87,6 +90,7 @@ const Register = () => {
   };
 
   const handleSubmitOTP = async () => {
+    setLoader({ open: true, text: "Submit OTP" });
     if (otp.length === 6) {
       // Simulate OTP submission (replace with your API call)
       console.log("Submitting OTP:", otp);
@@ -104,6 +108,8 @@ const Register = () => {
       } catch (error: any) {
         console.log("🚀 ~ handleSubmitOTP ~ error:", error);
         setError(error.response.data.error);
+      } finally {
+        setLoader({ open: false, text: "" });
       }
     } else {
       console.log("Please enter all 6 digits of the OTP");
@@ -130,8 +136,8 @@ const Register = () => {
   };
 
   const validationSchema = yup.object({
-    first_name: yup.string().required("First name is require"),
-    last_name: yup.string().required("Last name is require"),
+    firstName: yup.string().required("First name is require"),
+    lastName: yup.string().required("Last name is require"),
     email: yup
       .string()
       .email("Enter invalid email")
@@ -143,8 +149,8 @@ const Register = () => {
   const { handleChange, handleSubmit, values, errors, handleBlur } = useFormik({
     validationSchema: validationSchema,
     initialValues: {
-      first_name: "",
-      last_name: "",
+      firstName: "",
+      lastName: "",
       email: "",
       password: "",
       gender: "male",
@@ -157,6 +163,7 @@ const Register = () => {
 
   const createUser = async () => {
     try {
+      setLoader({ open: true, text: "Create account" });
       const user = await axios({
         url: "api/auth/register/createAccount",
         method: "POST",
@@ -166,16 +173,20 @@ const Register = () => {
       router.push("/login");
     } catch (error) {
       console.log("🚀 ~ createUser ~ error:", error);
+    } finally {
+      setLoader({ open: false, text: "" });
     }
   };
 
   const sendOTP = async () => {
     try {
+      setLoader({ open: true, text: "Request otp" });
       const OTP: any = await axios({
         url: "api/email/sendRegistrationOTP",
         method: "POST",
         data: { email: values.email },
       });
+      setError("");
       setStep(1);
       if (remainingTime !== 0) {
         handleResendOtp();
@@ -183,8 +194,9 @@ const Register = () => {
       // sessionStorage.setItem("authToken", user.data.token);
     } catch (error: any) {
       setError(error.response.data.error);
-
       console.log("🚀 ~ createUser ~ error:", error);
+    } finally {
+      setLoader({ open: false, text: "" });
     }
   };
 
@@ -203,6 +215,7 @@ const Register = () => {
 
   return (
     <>
+      <Loader loading={loader.open} text={loader.text} />
       {!loading ? (
         <section className="w-full min-h-screen flex gap-3 lg:gap-0 flex-col lg:flex-row justify-evenly items-center p-5 md:p-10 ">
           <div className=" w-full lg:w-1/2 flex md:p-6 flex-col justify-start items-start">
@@ -243,7 +256,7 @@ const Register = () => {
                     <div className="w-full flex flex-col sm:flex-row gap-y-5 gap-x-2 ">
                       <Input
                         size="lg"
-                        name="first_name"
+                        name="firstName"
                         placeholder="John"
                         // className="w-full"
                         width="50%"
@@ -253,8 +266,8 @@ const Register = () => {
                         }}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        value={values.first_name}
-                        error={errors.first_name ? true : false}
+                        value={values.firstName}
+                        error={errors.firstName ? true : false}
                         onPointerEnterCapture={undefined}
                         onPointerLeaveCapture={undefined}
                         crossOrigin={undefined}
@@ -262,7 +275,7 @@ const Register = () => {
 
                       <Input
                         size="lg"
-                        name="last_name"
+                        name="lastName"
                         placeholder="Dou"
                         // className="w-full"
                         width="50%"
@@ -271,8 +284,8 @@ const Register = () => {
                           className: "",
                         }}
                         onChange={handleChange}
-                        value={values.last_name}
-                        error={errors.last_name ? true : false}
+                        value={values.lastName}
+                        error={errors.lastName ? true : false}
                         onPointerEnterCapture={undefined}
                         onPointerLeaveCapture={undefined}
                         crossOrigin={undefined}

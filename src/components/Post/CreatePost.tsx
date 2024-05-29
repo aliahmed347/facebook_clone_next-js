@@ -18,7 +18,7 @@ import Loader from "../loader";
 import { toast } from "react-toastify";
 import { CustomToastWithLink } from "../../../utils/customToast";
 
-const CreatePost = () => {
+const CreatePost = ({ user }: { user: any }) => {
   const [loading, setLoading] = useState(false);
   const [createPost, setCreatePost] = useState({
     isOpen: false,
@@ -149,15 +149,20 @@ const CreatePost = () => {
                 </div>
               </div>
               <hr className="my-4" />
-              <div className="flex justify-start items-center gap-3 cursor-pointer my-3">
+              <Link
+                href={`/user/${user._id}`}
+                className="flex justify-start items-center gap-3 cursor-pointer my-3"
+              >
                 <Image
                   src="/asset/images/profile.png"
                   alt="user"
                   width={30}
                   height={30}
                 />
-                <h4 className="text-base font-semibold">Ali</h4>
-              </div>
+                <h4 className="text-base font-semibold">
+                  {user.firstName + " " + user.lastName}
+                </h4>
+              </Link>
               <div className=" relative ">
                 <textarea
                   placeholder="Whats on your mind Ali Ahmed?"

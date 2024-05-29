@@ -4,17 +4,20 @@ import {
   IconShare3,
   IconThumbUp,
 } from "@tabler/icons-react";
+import { formatDistanceToNowStrict } from "date-fns";
 import Image from "next/image";
 import React from "react";
 import { BiLike } from "react-icons/bi";
+import ReactPlayer from "react-player";
 
-const Post = () => {
+const Post = ({ post }: any) => {
+  const { author } = post;
   return (
     <div className="w-full bg-white rounded-xl ">
       <div className="flex justify-between w-full">
         <div className="flex items-center gap-1 p-2 ">
           <Image
-            src="/asset/images/profile.png"
+            src={author.avatar}
             alt="user"
             width={35}
             height={35}
@@ -22,19 +25,49 @@ const Post = () => {
           />
           <div className="">
             <h4 className="text-sm font-medium cursor-pointer  hover:underline ">
-              Royal Ahmed
+              {author.firstName + " " + author.lastName}
             </h4>
             <p className="text-xs text-secondaryText ">
-              {new Date().toISOString().slice(0, 10)}
+              {formatDistanceToNowStrict(new Date(post.createdAt))}
             </p>
           </div>
         </div>
       </div>
+      <div
+        className={`w-full p-2 ${
+          post.mediaType === "text" ? "text-center" : ""
+        }  `}
+      >
+        <p
+          className={`${
+            post.mediaType === "text" && post.content.length <= 360
+              ? "text-xl"
+              : ""
+          }  `}
+        >
+          {post.content + post.content.length}
+        </p>
+      </div>
       <div className="w-full">
-        <img
-          src="asset/uploads/posts_media/postpic3.jpg"
-          className="w-full h-auto"
-        />
+        {post.mediaType === "image" && (
+          <img src={post.media} className="w-full h-auto" />
+        )}
+        {post.mediaType === "video" && (
+          // <img src={post.media} className="w-full h-auto" />
+          <ReactPlayer
+            url={post.media}
+            playing={false}
+            controls={true}
+            config={{
+              file: {
+                forceVideo: true,
+              },
+            }}
+            style={{}}
+            width="100%"
+            height="100%"
+          />
+        )}
       </div>
       <div className="w-full p-3 flex justify-between text-secondaryText  text-xs ">
         <p>23 Likes</p>

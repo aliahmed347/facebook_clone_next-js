@@ -10,7 +10,7 @@ interface MulterRequest extends NextApiRequest {
 }
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const dir = "public/uploads/media";
+    const dir = "public/asset/uploads/posts_media";
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, {
         recursive: true,
@@ -46,7 +46,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
   try {
     const user: any = await getServerSession(req, res);
-    console.log("Test");
 
     if (!user) {
       res.status(StatusCodes.UNAUTHORIZED).json({ error: "Unauthorized" });
@@ -60,7 +59,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     let relativePath;
 
     if (file) {
-      relativePath = "uploads/media/" + file.filename;
+      relativePath = "asset/uploads/posts_media/" + file.filename;
     }
 
     const post = await POST.create({

@@ -14,7 +14,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     await connectDB();
 
-    const { first_name, last_name, email, password, DOB, gender } = req.body;
+    const { firstName, lastName, email, password, DOB, gender } = req.body;
 
     const isExist = await USER.findOne({
       email,
@@ -31,8 +31,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const hash = await bcrypt.hash(password, 12);
 
     const user = await USER.create({
-      first_name,
-      last_name,
+      firstName,
+      lastName,
       email,
       password: hash,
       DOB,

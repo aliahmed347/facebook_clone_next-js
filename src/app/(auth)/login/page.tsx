@@ -8,12 +8,14 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getSession, signIn } from "next-auth/react";
+import Loader from "@/components/loader";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(true);
+  const [loader, setLoader] = useState({ open: false, text: "" });
 
   useEffect(() => {
     const validateUser = async () => {
@@ -26,7 +28,7 @@ const Login = () => {
       } catch (error) {
         console.log("🚀 ~ validateUser ~ error:", error);
       } finally {
-        setLoading(true);
+        setLoading(false);
       }
     };
     validateUser();
@@ -52,7 +54,7 @@ const Login = () => {
     onSubmit: (values) => {
       const logUser = async () => {
         try {
-          setLoading(true);
+          setLoader({ open: true, text: "Submit" });
           const data: any = await signIn("credentials", {
             email: values.email,
             password: values.password,
@@ -68,7 +70,7 @@ const Login = () => {
           setError(error.response.data.error);
           console.log("🚀 ~ createUser ~ error:", error);
         } finally {
-          setLoading(false);
+          setLoader({ open: false, text: "" });
         }
       };
       logUser();
@@ -76,6 +78,7 @@ const Login = () => {
   });
   return (
     <>
+      <Loader loading={loader.open} text={loader.text} />
       {!loading ? (
         <section className="w-full min-h-screen flex gap-3 lg:gap-0 flex-col md:flex-row justify-evenly items-center p-5 md:p-10 ">
           <div className=" w-full md:w-1/2 flex md:p-6 flex-col justify-start items-start">

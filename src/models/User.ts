@@ -2,11 +2,11 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
-    first_name: {
+    firstName: {
       type: String,
       require: true,
     },
-    last_name: {
+    lastName: {
       type: String,
       require: true,
     },
@@ -29,11 +29,17 @@ const userSchema = new mongoose.Schema(
     },
     avatar: {
       type: String,
-      require,
+      default: "/asset/images/logo.png",
     },
+
     friends: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     //   requests: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
+
   { timestamps: true }
 );
 mongoose.models = {};
