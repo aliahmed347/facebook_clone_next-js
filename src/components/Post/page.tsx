@@ -174,7 +174,6 @@ const Post = ({ myPost }: any) => {
             author: { firstName: string; lastName: string };
             content: string;
           }) => {
-            console.log("🚀 ~ {post.comments.map ~ comment:", comment);
             return (
               <div className="bg-backgroundColor rounded-lg p-2">
                 <p className="text-xs font-extralight">

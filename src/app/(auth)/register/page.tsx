@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import * as yup from "yup";
 import { authOptions } from "../../../../pages/api/auth/[...nextauth]";
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import Loader from "@/components/loader";
 
 const Register = () => {
@@ -33,22 +33,17 @@ const Register = () => {
 
   const router = useRouter();
 
+  const { data, status } = useSession();
+
   useEffect(() => {
-    const validateUser = async () => {
-      setLoading(true);
-      try {
-        const session = await getSession();
-        if (session) {
-          router.push("/");
-        }
-      } catch (error) {
-        console.log("🚀 ~ validateUser ~ error:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    validateUser();
-  }, []);
+    if (status === "unauthenticated") {
+      setLoading(false);
+    }
+    if (status === "authenticated") {
+      setLoading(false);
+      return router.push("/");
+    }
+  }, [status, data]);
   useEffect(() => {
     return () => {
       if (timerId) {

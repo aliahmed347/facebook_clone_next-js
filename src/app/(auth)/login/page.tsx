@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getSession, signIn,signOut } from "next-auth/react";
+import { getSession, signIn, signOut, useSession } from "next-auth/react";
 import Loader from "@/components/loader";
 
 const Login = () => {
@@ -17,22 +17,17 @@ const Login = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [loader, setLoader] = useState({ open: false, text: "" });
 
+  const { data, status } = useSession();
+
   useEffect(() => {
-    const validateUser = async () => {
-      setLoading(true);
-      try {
-        const session = await getSession();
-        if (session) {
-          router.push("/");
-        }
-      } catch (error) {
-        console.log("🚀 ~ validateUser ~ error:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    validateUser();
-  }, []);
+    if (status === "unauthenticated") {
+      setLoading(false);
+    }
+    if (status === "authenticated") {
+      setLoading(false);
+      return router.push("/");
+    }
+  }, [status, data]);
 
   const validationSchema = yup.object({
     email: yup

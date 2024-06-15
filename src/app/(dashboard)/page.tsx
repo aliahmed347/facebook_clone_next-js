@@ -8,27 +8,18 @@ import { getSession, useSession } from "next-auth/react";
 import PostListSkelton from "@/components/Skeltons/PostListSkelton";
 
 const Page = () => {
-  const [user, setUser] = useState<any>({});
   const router = useRouter();
   const [Loading, setLoading] = useState(true);
+  const { data, status } = useSession();
+
   useEffect(() => {
-    const validateUser = async () => {
-      try {
-        setLoading(true);
-        const session = await getSession();
-        if (!session) {
-          router.push("/login");
-        }
-        setUser(session?.user);
-      } catch (error) {
-        console.log("🚀 ~ validateUser ~ error:", error);
-        router.push("/login");
-      } finally {
-        setLoading(false);
-      }
-    };
-    validateUser();
-  }, []);
+    if (status === "unauthenticated") {
+      return router.push("/login");
+    }
+    if (status === "authenticated") {
+      setLoading(false);
+    }
+  }, [status, data]);
 
   return (
     <section className="w-  full  flex justify-center items-center py-3 ">
@@ -40,7 +31,7 @@ const Page = () => {
           </>
         ) : (
           <>
-            <CreatePost user={user} />
+            <CreatePost />
             <PostsList />
           </>
         )}

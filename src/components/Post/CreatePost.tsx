@@ -10,7 +10,7 @@ import {
 import EmojiPicker from "emoji-picker-react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Dropzone from "react-dropzone";
 import axios from "axios";
 import ReactPlayer from "react-player";
@@ -18,10 +18,24 @@ import Loader from "../loader";
 import { toast } from "react-toastify";
 import { CustomToastWithLink } from "../../../utils/customToast";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
-const CreatePost = ({ user }: { user: any }) => {
+const CreatePost = () => {
   const [loading, setLoading] = useState(false);
-  const { data } = useSession();
+  const [user, setUser] = useState<any>({});
+  const router = useRouter();
+
+  const { data, status } = useSession();
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      return router.push("/login");
+    }
+    if (data?.user) {
+      setUser(data?.user);
+    }
+  }, [data, status]);
+
   const [createPost, setCreatePost] = useState({
     isOpen: false,
     isMedia: false,
@@ -136,7 +150,8 @@ const CreatePost = ({ user }: { user: any }) => {
 
   return (
     <>
-      {!user && <Loader loading={loading} text="Posting" />}
+      {!user ||
+        (status === "loading" && <Loader loading={loading} text="Posting" />)}
       {createPost.isOpen && (
         <>
           <Modal>
@@ -301,47 +316,49 @@ const CreatePost = ({ user }: { user: any }) => {
         </>
       )}
 
-      <div className="bg-white rounded-lg p-2 ">
-        <div className="flex justify-start items-center gap-4">
-          <Link href="/">
-            <Image
-              src="/asset/images/profile.png"
-              alt="user"
-              width={40}
-              height={40}
+      {status === "authenticated" && (
+        <div className="bg-white rounded-lg p-2 ">
+          <div className="flex justify-start items-center gap-4">
+            <Link href="/">
+              <Image
+                src="/asset/images/profile.png"
+                alt="user"
+                width={40}
+                height={40}
+              />
+            </Link>
+            <input
+              type="text"
+              name="search"
+              id="search"
+              autoComplete="none"
+              placeholder={`Whats on your mind ${user.firstName} ${user.lastName}`}
+              className="w-full bg-backgroundColor text-primaryText py-[6px] px-3 rounded-full cursor-pointer text-base border-none outline-none "
+              onClick={() =>
+                setCreatePost((pre) => {
+                  return {
+                    ...pre,
+                    isOpen: true,
+                  };
+                })
+              }
             />
-          </Link>
-          <input
-            type="text"
-            name="search"
-            id="search"
-            autoComplete="none"
-            placeholder={`Whats on your mind ${user.firstName} ${user.lastName}`}
-            className="w-full bg-backgroundColor text-primaryText py-[6px] px-3 rounded-full cursor-pointer text-base border-none outline-none "
-            onClick={() =>
-              setCreatePost((pre) => {
-                return {
-                  ...pre,
-                  isOpen: true,
-                };
-              })
-            }
-          />
-          <IconPhotoVideo
-            size={40}
-            className="text-green-500 cursor-pointer"
-            onClick={() =>
-              setCreatePost((pre) => {
-                return {
-                  ...pre,
-                  isOpen: true,
-                };
-              })
-            }
-          />
-          {/* </div> */}
+            <IconPhotoVideo
+              size={40}
+              className="text-green-500 cursor-pointer"
+              onClick={() =>
+                setCreatePost((pre) => {
+                  return {
+                    ...pre,
+                    isOpen: true,
+                  };
+                })
+              }
+            />
+            {/* </div> */}
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 };
