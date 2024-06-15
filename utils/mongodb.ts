@@ -23,7 +23,7 @@ const connectDB = async () => {
     console.log("Database is already connected");
   } else {
     try {
-      await mongoose.connect("mongodb://localhost:27017", connectionOptions);
+      await mongoose.connect((process.env.MONGODB_URI as string), connectionOptions);
       USER.find();
       POST.find();
       COMMENT.find();
