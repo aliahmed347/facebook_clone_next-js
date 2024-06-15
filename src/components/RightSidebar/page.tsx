@@ -5,10 +5,10 @@ import { IconPlus } from "@tabler/icons-react";
 
 const RightSidebar = () => {
   return (
-    <div className="w-full my-2 h-[calc(100vh-136px)] xl:h-[calc(100vh-88px)] overflow-y-auto no-scrollbar text-primaryText">
+    <div className="w-full my-2 h-[calc(100vh-136px)] xl:h-[calc(100vh-88px)] overflow-y-auto no-scrollbar text-primaryText ">
       <div className="">
         <h2 className="text-base text-secondaryText">Group conversations</h2>
-        <div className="flex justify-start items-center gap-3 mt-2 hover:bg-[#E4E6E9] px-2 py-2 cursor-pointer rounded-lg ">
+        <div className="flex justify-start items-center gap-3 mt-2 hover:bg-[#E4E6E9] px-2 py-2 cursor-pointer rounded-lg  ">
           <div className="p-1 bg-[#D1D5DB] rounded-full  ">
             <IconPlus size={18} />
           </div>

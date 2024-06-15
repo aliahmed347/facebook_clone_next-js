@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getSession, signIn } from "next-auth/react";
+import { getSession, signIn,signOut } from "next-auth/react";
 import Loader from "@/components/loader";
 
 const Login = () => {

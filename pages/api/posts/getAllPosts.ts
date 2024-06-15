@@ -15,8 +15,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(StatusCodes.UNAUTHORIZED).json({ error: "Unauthorized" });
     }
     const posts = await POST.find({})
-      .populate("author")
-      // .sort({ createdAt: -1 });
+      .populate({ path: 'comments', populate: { path: 'replies' } }).populate({ path: 'comments', populate: { path: 'author' } }).populate("author").sort({ createdAt: -1 });
     return res.status(StatusCodes.OK).json({ posts });
   } catch (error) {
     console.log("🚀 ~ handler ~ error:", error);

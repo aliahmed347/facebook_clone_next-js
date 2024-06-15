@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Post from "../Post/page";
 import axios from "axios";
+import PostListSkelton from "../Skeltons/PostListSkelton";
 
 const PostsList = () => {
   const [Posts, setPosts] = useState([]);
@@ -24,8 +25,11 @@ const PostsList = () => {
   };
   return (
     <div className="w-full  mt-3 flex justify-center items-center gap-3 flex-col  ">
-      {!loading &&
-        Posts.map((post: any, index) => <Post key={index} post={post} />)}
+      {!loading ? (
+        Posts.map((post: any, index) => <Post key={index} myPost={post} />)
+      ) : (
+        <PostListSkelton />
+      )}
     </div>
   );
 };

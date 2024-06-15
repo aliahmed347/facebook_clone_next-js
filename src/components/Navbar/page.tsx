@@ -10,15 +10,27 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import NavbarItems from "../../../utils/navbarItems";
-import { usePathname } from "next/navigation";
-import { AiFillMessage } from "react-icons/ai";
-import { BiSolidMessageRoundedDots } from "react-icons/bi";
+import { usePathname, useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
 
 const Navbar = () => {
   const pathname = usePathname();
 
+  const [profile, setProfile] = useState(false);
+
+  const router = useRouter();
+  const logOut = async () => {
+    try {
+      signOut({
+        callbackUrl: "/login",
+        redirect: true,
+      });
+    } catch (error) {
+      console.log("🚀 ~ logOut ~ error:", error);
+    }
+  };
   return (
-    <nav className="bg-white shadow-[0_4px_12px_rgba(0,0,0,0.1)] sticky top-0 w-full py-2 px-4 ">
+    <nav className="bg-white shadow-[0_4px_12px_rgba(0,0,0,0.1)] sticky z-[9999] top-0 w-full py-2 px-4 ">
       <div className="w-full  lg:hidden flex justify-between gap-1  ">
         <Image src="/asset/images/logo.png" alt="logo" width={40} height={40} />
         <div className="flex gap-1">
@@ -120,13 +132,34 @@ const Navbar = () => {
               <IconBell size={24} className="text-primaryText" />
             </button>
           </Tooltip>
-          <Image
-            src="/asset/images/profile.png"
-            alt="user"
-            width={35}
-            height={35}
-            className="cursor-pointer hidden xl:block  "
-          />
+          <div className="relative">
+            <Image
+              src="/asset/images/profile.png"
+              alt="user"
+              width={35}
+              height={35}
+              className="cursor-pointer hidden xl:block  "
+              onClick={() => setProfile(!profile)}
+            />
+            {profile && (
+              <div className="absolute w-40 bg-white top-14 right-4 p-1 rounded-lg ">
+                <ul className="w-full h-full">
+                  <li className="cursor-pointer hover:opacity-50 p-1 mt-1  ">
+                    Profile
+                  </li>
+                  <li className="cursor-pointer hover:opacity-50 p-1 mt-1 ">
+                    Settings
+                  </li>
+                  <li
+                    className="cursor-pointer hover:opacity-50 p-1 mt-1 "
+                    onClick={logOut}
+                  >
+                    Logout
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
           <Tooltip
             content="Menu"
             placement="bottom"

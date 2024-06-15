@@ -77,9 +77,5 @@ export const authOptions: any = {
   secret: process.env.NEXT_AUTH_SECRET_KET,
 };
 
-const getUserByEmail = async (email: any) => {
-  const user = await USER.findOne({ email });
-  return user;
-};
 
 export default NextAuth(authOptions);

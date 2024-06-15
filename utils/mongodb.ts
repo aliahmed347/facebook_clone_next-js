@@ -1,5 +1,7 @@
+import POST from "@/models/Post";
 import USER from "../src/models/User";
 import mongoose, { ConnectOptions } from "mongoose";
+import COMMENT from "@/models/Comment";
 
 const connectionOptions = {
   // Optional: Other connection options (e.g., useCreateIndex, useFindAndModify)
@@ -22,6 +24,8 @@ const connectDB = async () => {
     try {
       await mongoose.connect("mongodb://localhost:27017", connectionOptions);
       USER.find();
+      POST.find();
+      COMMENT.find();
 
       console.log("MongoDB is connected");
       global.connectDB = true; // Set a flag to prevent re-connection

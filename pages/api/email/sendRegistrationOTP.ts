@@ -1,6 +1,8 @@
 import { StatusCodes } from "http-status-codes";
 import { NextApiRequest, NextApiResponse } from "next";
 import randomize from "randomatic";
+import { connectDB } from "@/../utils/mongodb";
+
 
 import { sendMail } from "../../../utils/sendMail";
 import { RegistrationTemplate } from "../../../src/components/EmailTamplates/emailTemplate";
@@ -13,6 +15,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       error: "method not allowed",
     });
   }
+  await connectDB();
+
   try {
     const { email } = req.body;
 
@@ -51,7 +55,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       html,
     });
 
-    res.status(StatusCodes.OK).json(true);
+    return res.status(StatusCodes.OK).json(true);
   } catch (error) {
     console.log("🚀 ~ handler ~ error:", error);
     return res.status(StatusCodes.BAD_REQUEST).json({

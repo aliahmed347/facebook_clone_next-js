@@ -17,9 +17,11 @@ import ReactPlayer from "react-player";
 import Loader from "../loader";
 import { toast } from "react-toastify";
 import { CustomToastWithLink } from "../../../utils/customToast";
+import { useSession } from "next-auth/react";
 
 const CreatePost = ({ user }: { user: any }) => {
   const [loading, setLoading] = useState(false);
+  const { data } = useSession();
   const [createPost, setCreatePost] = useState({
     isOpen: false,
     isMedia: false,
@@ -134,7 +136,7 @@ const CreatePost = ({ user }: { user: any }) => {
 
   return (
     <>
-      <Loader loading={loading} text="Posting" />
+      {!user && <Loader loading={loading} text="Posting" />}
       {createPost.isOpen && (
         <>
           <Modal>
@@ -153,19 +155,17 @@ const CreatePost = ({ user }: { user: any }) => {
                 href={`/user/${user._id}`}
                 className="flex justify-start items-center gap-3 cursor-pointer my-3"
               >
-                <Image
-                  src="/asset/images/profile.png"
-                  alt="user"
-                  width={30}
-                  height={30}
-                />
+                <Image src={user.avatar} alt="user" width={30} height={30} />
                 <h4 className="text-base font-semibold">
                   {user.firstName + " " + user.lastName}
                 </h4>
               </Link>
               <div className=" relative ">
                 <textarea
-                  placeholder="Whats on your mind Ali Ahmed?"
+                  placeholder={`Whats on your mind ${
+                    user.firstName + " " + user.lastName
+                  }?`}
+                  autoFocus
                   className="h-40 w-full resize-none outline-none border-primary "
                   onChange={inputHandler}
                   name="content"
@@ -316,7 +316,7 @@ const CreatePost = ({ user }: { user: any }) => {
             name="search"
             id="search"
             autoComplete="none"
-            placeholder="Whats on your mind Ali Ahmed?"
+            placeholder={`Whats on your mind ${user.firstName} ${user.lastName}`}
             className="w-full bg-backgroundColor text-primaryText py-[6px] px-3 rounded-full cursor-pointer text-base border-none outline-none "
             onClick={() =>
               setCreatePost((pre) => {
