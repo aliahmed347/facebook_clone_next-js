@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { models } from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
@@ -42,8 +43,7 @@ const userSchema = new mongoose.Schema(
 
   { timestamps: true }
 );
-mongoose.models = {};
 
-const USER = mongoose.model("User", userSchema);
+models["USER"] = mongoose.model("User", userSchema);
 
-export default USER;
+export default models.USER;

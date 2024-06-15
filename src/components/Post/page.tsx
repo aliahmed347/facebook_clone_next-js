@@ -169,18 +169,25 @@ const Post = ({ myPost }: any) => {
       </div>
       <hr className="mb-3" />
       <div className="w-full px-4 flex gap-2 flex-col">
-        {post.comments.map((comment) => {
-          console.log("🚀 ~ {post.comments.map ~ comment:", comment);
-          return (
-            <div className="bg-backgroundColor rounded-lg p-2">
-              <p className="text-xs font-extralight">
-                {comment?.author?.firstName + " " + comment?.author?.lastName}
-              </p>
-              <p className="text-xs font-extralight mt-1">{comment.content}</p>
-              {/* <div className="flex"></div> */}
-            </div>
-          );
-        })}
+        {post.comments.map(
+          (comment: {
+            author: { firstName: string; lastName: string };
+            content: string;
+          }) => {
+            console.log("🚀 ~ {post.comments.map ~ comment:", comment);
+            return (
+              <div className="bg-backgroundColor rounded-lg p-2">
+                <p className="text-xs font-extralight">
+                  {comment?.author?.firstName + " " + comment?.author?.lastName}
+                </p>
+                <p className="text-xs font-extralight mt-1">
+                  {comment.content}
+                </p>
+                {/* <div className="flex"></div> */}
+              </div>
+            );
+          }
+        )}
       </div>
       <div className="w-full p-2   ">
         <div className="w-full flex justify-between gap-2  ">

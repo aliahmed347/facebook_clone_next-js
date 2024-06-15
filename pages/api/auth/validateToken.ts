@@ -16,7 +16,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         .json({ error: "Unauthorize user" });
     }
 
-    const payload: JwtPayload = await verifyToken(token);
+    const payload: JwtPayload | any = await verifyToken(token);
 
     if (!payload) {
       return res

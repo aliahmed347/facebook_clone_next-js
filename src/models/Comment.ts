@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { models } from "mongoose";
 
 const CommentSchema = new mongoose.Schema(
     {
@@ -27,7 +27,6 @@ const CommentSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-mongoose.models = {};
-const COMMENT = mongoose.model("Comment", CommentSchema);
+models["COMMENT"] = mongoose.model("Comment", CommentSchema);
 
-export default COMMENT;
+export default models.COMMENT; 
