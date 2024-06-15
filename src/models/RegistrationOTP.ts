@@ -1,4 +1,4 @@
-import mongoose, { model, models } from "mongoose";
+import mongoose, { model } from "mongoose";
 import { string } from "yup";
 
 const OTPSchema = new mongoose.Schema(
@@ -23,7 +23,8 @@ const OTPSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+(mongoose.models as any) = {};
 
-models["RegistrationOTP"] = model("RegistrationOTP", OTPSchema);
+const RegistrationOTP = model("RegistrationOTP", OTPSchema);
 
-export default models.RegistrationOTP;
+export default RegistrationOTP;

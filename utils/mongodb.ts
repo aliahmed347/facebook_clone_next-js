@@ -2,6 +2,7 @@ import POST from "@/models/Post";
 import USER from "../src/models/User";
 import mongoose, { ConnectOptions } from "mongoose";
 import COMMENT from "@/models/Comment";
+import RegistrationOTP from "@/models/RegistrationOTP";
 
 const connectionOptions = {
   // Optional: Other connection options (e.g., useCreateIndex, useFindAndModify)
@@ -26,6 +27,7 @@ const connectDB = async () => {
       USER.find();
       POST.find();
       COMMENT.find();
+      RegistrationOTP.find();
 
       console.log("MongoDB is connected");
       global.connectDB = true; // Set a flag to prevent re-connection
