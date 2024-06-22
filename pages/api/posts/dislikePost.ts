@@ -2,6 +2,7 @@ import { StatusCodes } from "http-status-codes";
 import { NextApiRequest, NextApiResponse } from "next";
 import getServerSession from "../../../utils/getServerSession";
 import POST from "@/models/Post";
+import { authOptions } from "../auth/[...nextauth]";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method !== "POST") {
@@ -12,6 +13,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     try {
         const user: any = await getServerSession(req, res);
+
         if (!user) {
             return res.status(StatusCodes.UNAUTHORIZED).json({ error: "Unauthorized" });
         }
@@ -28,7 +30,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             { _id: postId },
             { $pull: { likes: user._id } },
             { new: true }
-        ).populate("author").populate({ path: 'comments', populate: { path: 'replies' } })
+        ).populate("author").populate({ path: 'comments', populate: { path: 'replies' } }).populate({ path: 'comments', populate: { path: 'author' } })
 
 
         return res.status(StatusCodes.OK).json({ post });

@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema(
     },
     avatar: {
       type: String,
-      default: "/asset/images/logo.png",
+      default: "/asset/images/profile.png",
     },
 
     friends: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],

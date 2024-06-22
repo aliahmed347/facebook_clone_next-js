@@ -36,7 +36,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         .json({ error: "This email is already register with us" });
     }
 
-    const code = randomize("A0a", 6);
+    const code = randomize("0", 6);
 
     await RegistrationOTP.updateMany({ email }, { is_Expire: true });
 

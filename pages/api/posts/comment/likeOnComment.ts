@@ -18,33 +18,31 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             return res.status(StatusCodes.UNAUTHORIZED).json({ error: "Unauthorized" });
         }
 
-        const { post, content, author, commentId } = req.body;
+        const { post, author, commentId } = req.body;
 
 
-        const comment = await COMMENT.create({
-            content,
-            post,
-            author,
+        const comment = await COMMENT.findOne({
+            _id: commentId,
+            post
         })
 
-        let newPost
-
-        if (commentId) {
+        if (comment?.likes.includes(author)) {
             const comments = await COMMENT.findByIdAndUpdate(
                 { _id: commentId },
-                { $push: { replies: comment._id } },
+                { $pull: { likes: author } },
                 { new: true }
             )
-
-            newPost = await POST.findOne({ _id: post }).populate("author").populate({ path: 'comments', populate: { path: 'replies' } }).populate({ path: 'comments', populate: { path: 'author' } })
         } else {
-            newPost = await POST.findByIdAndUpdate(
-                { _id: post },
-                { $push: { comments: comment._id } },
+            const comments = await COMMENT.findByIdAndUpdate(
+                { _id: commentId },
+                { $push: { likes: author } },
                 { new: true }
-            ).populate("author").populate({ path: 'comments', populate: { path: 'replies' } }).populate({ path: 'comments', populate: { path: 'author' } })
-
+            )
         }
+
+
+        const newPost = await POST.findOne({ _id: post }).populate("author").populate({ path: 'comments', populate: { path: 'replies' } }).populate({ path: 'comments', populate: { path: 'author' } })
+
 
         return res.status(StatusCodes.OK).json({ comments: newPost?.comments });
 

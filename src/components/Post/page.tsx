@@ -1,9 +1,14 @@
 // "use client";
 import {
+  IconH1,
+  IconHeart,
+  IconHeartFilled,
   IconMessageCircle2,
+  IconMessageReply,
   IconSend,
   IconShare3,
   IconThumbUp,
+  IconThumbUpFilled,
 } from "@tabler/icons-react";
 import axios from "axios";
 import { formatDistanceToNowStrict } from "date-fns";
@@ -16,6 +21,7 @@ import ReactPlayer from "react-player";
 const Post = ({ myPost }: any) => {
   const [post, setPost] = useState<any>(myPost);
   const [comment, setComment] = useState<string>("");
+  const [commentOpen, setCommentOpen] = useState(false);
   const { author } = post;
   const { data }: any = useSession();
 
@@ -66,6 +72,27 @@ const Post = ({ myPost }: any) => {
           post: id,
           // commentId: "66689626e4976115f69c0d4e",
           content: comment,
+          author: data?.user?._id,
+        },
+      });
+
+      setPost((prev: any) => {
+        return {
+          ...prev,
+          comments: res.data.comments,
+        };
+      });
+    } catch (error) {
+      console.log("🚀 ~ likePostHandler ~ error:", error);
+    }
+  };
+  const CommentLikeHandler = async (id: string, commentId: string) => {
+    try {
+      const res = await axios("api/posts/comment/likeOnComment", {
+        method: "POST",
+        data: {
+          post: id,
+          commentId,
           author: data?.user?._id,
         },
       });
@@ -148,17 +175,22 @@ const Post = ({ myPost }: any) => {
       <hr />
       <div className="w-full p-2 flex justify-around text-secondaryText gap-1  ">
         <div
-          className="w-1/3 py-1 hover:bg-backgroundColor flex justify-center items-center gap-2 rounded-md cursor-pointer "
+          className={`w-1/3 py-1 hover:bg-backgroundColor flex justify-center items-center gap-2 rounded-md cursor-pointer ${
+            post.likes.includes(data?.user?._id) && "text-primary"
+          }   `}
           onClick={() => likePostHandler(post._id)}
         >
-          <IconThumbUp
-            className={
-              post.likes.includes(data?.user?._id) ? "text-primary" : ""
-            }
-          />
+          {post.likes.includes(data?.user?._id) ? (
+            <IconThumbUpFilled />
+          ) : (
+            <IconThumbUp />
+          )}
           <p className="text-sm select-none">Like</p>
         </div>
-        <div className="w-1/3 py-1 hover:bg-backgroundColor flex justify-center items-center gap-2 rounded-md cursor-pointer">
+        <div
+          className="w-1/3 py-1 hover:bg-backgroundColor flex justify-center items-center gap-2 rounded-md cursor-pointer"
+          onClick={() => setCommentOpen(!commentOpen)}
+        >
           <IconMessageCircle2 />
           <p className="text-sm select-none">Comment</p>
         </div>
@@ -168,61 +200,110 @@ const Post = ({ myPost }: any) => {
         </div>
       </div>
       <hr className="mb-3" />
-      <div className="w-full px-4 flex gap-2 flex-col">
-        {post.comments.map(
-          (comment: {
-            author: { firstName: string; lastName: string };
-            content: string;
-          }) => {
-            return (
-              <div className="bg-backgroundColor rounded-lg p-2">
-                <p className="text-xs font-extralight">
-                  {comment?.author?.firstName + " " + comment?.author?.lastName}
-                </p>
-                <p className="text-xs font-extralight mt-1">
-                  {comment.content}
-                </p>
-                {/* <div className="flex"></div> */}
-              </div>
-            );
-          }
-        )}
-      </div>
-      <div className="w-full p-2   ">
-        <div className="w-full flex justify-between gap-2  ">
-          <Image
-            src={data?.user?.avatar}
-            alt="user"
-            width={35}
-            height={35}
-            className="cursor-pointer w-[35px] h-[35px]"
-          />
-          <div className="bg-backgroundColor w-full rounded-xl p-1">
-            <textarea
-              onChange={(e) => setComment(e.target.value)}
-              value={comment}
-              ref={textareaRef}
-              placeholder="Write a comment..."
-              className=" w-full p-2 text-sm resize-none overflow-hidden border-0 outline-none rounded-t-xl "
-            ></textarea>
-            {comment && (
-              <div className="float-right flex w-full justify-end items-center   ">
-                <button
-                  className="flex items-center justify-center gap-1 cursor-pointer"
-                  type="button"
-                  onClick={() => comment && CommentHandler(post._id)}
-                >
-                  Send
-                  <IconSend className="" size={18} />
-                </button>
-              </div>
+      {commentOpen && (
+        <>
+          <div className="w-full px-4 flex gap-2 flex-col">
+            {post.comments.map(
+              (comment: {
+                _id: string;
+                author: { firstName: string; lastName: string; avatar: string };
+                content: string;
+                likes: any[];
+              }) => {
+                return (
+                  <div className="bg-backgroundColor rounded-lg p-2 w-full">
+                    <div className="w-full flex items-center gap-1">
+                      <Image
+                        alt="user"
+                        src={comment?.author?.avatar}
+                        width={20}
+                        height={20}
+                      />
+                      <p className="text-xs font-extralight cursor-pointer hover:underline">
+                        {comment?.author?.firstName +
+                          " " +
+                          comment?.author?.lastName}
+                      </p>
+                    </div>
+                    <div className=" w-full flex justify-between">
+                      <p className="text-sm font-normal mt-1">
+                        {comment.content}
+                      </p>
+                    </div>
+                    <div className="w-full flex justify-end items-end  gap-4 ">
+                      <div className="flex justify-center items-center gap-1">
+                        {comment?.likes?.includes(data?.user?._id) ? (
+                          <IconHeartFilled
+                            size={15}
+                            className="cursor-pointer text-primary"
+                            onClick={() =>
+                              CommentLikeHandler(post?._id, comment?._id)
+                            }
+                          />
+                        ) : (
+                          <IconHeart
+                            size={15}
+                            className="cursor-pointer"
+                            onClick={() =>
+                              CommentLikeHandler(post?._id, comment?._id)
+                            }
+                          />
+                        )}
+                        <p className="text-[10px] font-thin mt-1">
+                          {comment?.likes?.length}
+                        </p>
+                      </div>
+                      <div className="flex justify-center items-center gap-1">
+                        <IconMessageReply size={15} />
+                        <p className="text-[10px] font-thin mt-1">
+                          {comment?.likes?.length}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* <div className="flex"></div> */}
+                  </div>
+                );
+              }
             )}
           </div>
-        </div>
-        {/* <div className="w-full flex justify-end items-center px-2 py-1">
+          <div className="w-full p-2   ">
+            <div className="w-full flex justify-between gap-2  ">
+              <Image
+                src={data?.user?.avatar}
+                alt="user"
+                width={35}
+                height={35}
+                className="cursor-pointer w-[35px] h-[35px]"
+              />
+              <div className="bg-backgroundColor w-full rounded-xl p-1">
+                <textarea
+                  onChange={(e) => setComment(e.target.value)}
+                  value={comment}
+                  ref={textareaRef}
+                  placeholder="Write a comment..."
+                  className=" w-full p-2 text-sm resize-none overflow-hidden border-0 outline-none rounded-t-xl "
+                ></textarea>
+                {comment && (
+                  <div className="float-right flex w-full justify-end items-center   ">
+                    <button
+                      className="flex items-center justify-center gap-1 cursor-pointer"
+                      type="button"
+                      onClick={() => comment && CommentHandler(post._id)}
+                    >
+                      Send
+                      <IconSend className="" size={18} />
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+            {/* <div className="w-full flex justify-end items-center px-2 py-1">
           <IconSend className="cursor-pointer" />
         </div> */}
-      </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };

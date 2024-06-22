@@ -5,12 +5,16 @@ import POST from "@/models/Post";
 import getServerSession from "../../../utils/getServerSession";
 import fs from "fs";
 import MiddlewareRunner from "../../../utils/middlewareRunner";
+import { authOptions } from "../auth/[...nextauth]";
 interface MulterRequest extends NextApiRequest {
   file: Express.Multer.File;
 }
+
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
+  destination: function async(req, file, cb) {
     const dir = "public/asset/uploads/posts_media";
+
+
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, {
         recursive: true,
@@ -47,8 +51,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const user: any = await getServerSession(req, res);
 
+
     if (!user) {
-      res.status(StatusCodes.UNAUTHORIZED).json({ error: "Unauthorized" });
+      return res.status(StatusCodes.UNAUTHORIZED).json({ error: "Unauthorized" });
     }
 
     await MiddlewareRunner(req, res, upload.single("media"));
@@ -67,7 +72,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       media: relativePath,
       mediaType,
       author: user._id,
-    });
+    }).populate("author").populate({ path: 'comments', populate: { path: 'replies' } }).populate({ path: 'comments', populate: { path: 'author' } });
 
     return res.status(StatusCodes.OK).json({ post });
   } catch (error) {

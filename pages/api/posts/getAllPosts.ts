@@ -2,6 +2,7 @@ import { StatusCodes } from "http-status-codes";
 import { NextApiRequest, NextApiResponse } from "next";
 import getServerSession from "../../../utils/getServerSession";
 import POST from "@/models/Post";
+import { authOptions } from "../auth/[...nextauth]";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== "POST") {
@@ -12,7 +13,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const user: any = await getServerSession(req, res);
     if (!user) {
-      res.status(StatusCodes.UNAUTHORIZED).json({ error: "Unauthorized" });
+      return res.status(StatusCodes.UNAUTHORIZED).json({ error: "Unauthorized" });
     }
     const posts = await POST.find({})
       .populate({ path: 'comments', populate: { path: 'replies' } }).populate({ path: 'comments', populate: { path: 'author' } }).populate("author").sort({ createdAt: -1 });
