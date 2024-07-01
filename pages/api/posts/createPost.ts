@@ -67,12 +67,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       relativePath = "asset/uploads/posts_media/" + file.filename;
     }
 
-    const post = await POST.create({
+    const post = await (await (await (await POST.create({
       content,
       media: relativePath,
       mediaType,
       author: user._id,
-    }).populate("author").populate({ path: 'comments', populate: { path: 'replies' } }).populate({ path: 'comments', populate: { path: 'author' } });
+    })).populate("author")).populate({ path: 'comments', populate: { path: 'replies' } })).populate({ path: 'comments', populate: { path: 'author' } });
 
     return res.status(StatusCodes.OK).json({ post });
   } catch (error) {
