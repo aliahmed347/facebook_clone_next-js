@@ -9,6 +9,12 @@ const PostSchema = new mongoose.Schema(
     media: {
       type: String,
     },
+    width: {
+      type: Number,
+    },
+    height: {
+      type: Number,
+    },
     mediaType: {
       type: String,
     },

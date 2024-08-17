@@ -19,9 +19,11 @@ import { toast } from "react-toastify";
 import { CustomToastWithLink } from "../../../utils/customToast";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import useLoaderStore from "../../../store/loaderStore";
 
 const CreatePost = () => {
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
+  const { loader, setText, setLoader, text } = useLoaderStore();
   const [user, setUser] = useState<any>({});
   const router = useRouter();
 
@@ -116,22 +118,33 @@ const CreatePost = () => {
     });
   };
   const submitHandler = async () => {
-    setLoading(true);
+    // setLoading(true);
+    setLoader(true);
+    setText("Posting");
     try {
       if (createPost.imageError) {
         return;
       }
       const formData = new FormData();
 
-      formData.append("media", createPost.media);
-      formData.append("content", createPost.content);
-      formData.append("mediaType", createPost.mediaType);
+      formData.append("sample_file", createPost.media);
 
-      const response = await axios("api/posts/createPost", {
+      const { data: m_data } = await axios("api/upload", {
         method: "POST",
         data: formData,
       });
-      console.log("🚀 ~ submitHandler ~ data:", response);
+      const { width, height, secure_url } = m_data;
+
+      const response = await axios("api/posts/createPost", {
+        method: "POST",
+        data: {
+          content: createPost.content,
+          mediaType: createPost.mediaType,
+          media: secure_url,
+          height,
+          width,
+        },
+      });
       const { data } = response;
       toast(
         <CustomToastWithLink
@@ -144,14 +157,15 @@ const CreatePost = () => {
     } catch (error) {
       console.log("🚀 ~ submitHandler ~ error:", error);
     } finally {
-      setLoading(false);
+      setLoader(false);
+      setText("");
     }
   };
 
   return (
     <>
       {!user ||
-        (status === "loading" && <Loader loading={loading} text="Posting" />)}
+        (status === "loading" && <Loader loading={loader} text={text} />)}
       {createPost.isOpen && (
         <>
           <Modal>

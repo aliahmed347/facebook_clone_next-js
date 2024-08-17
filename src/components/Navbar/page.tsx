@@ -12,9 +12,11 @@ import React, { useEffect, useState } from "react";
 import NavbarItems from "../../../utils/navbarItems";
 import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
+import useLoaderStore from "../../../store/loaderStore";
 
 const Navbar = () => {
   const pathname = usePathname();
+  const { sidebar, setSidebar } = useLoaderStore();
 
   const [profile, setProfile] = useState(false);
 
@@ -167,7 +169,7 @@ const Navbar = () => {
           >
             <button
               className="rounded-full h-10 w-10 bg-backgroundColor  justify-center items-center flex xl:hidden"
-              // onClick={() => setActive(!active)}
+              onClick={() => setSidebar(!sidebar)}
             >
               <IconMenu2 size={24} className="text-primaryText" />
             </button>

@@ -9,13 +9,15 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getSession, signIn, signOut, useSession } from "next-auth/react";
 import Loader from "@/components/loader";
+import useLoaderStore from "../../../../store/loaderStore";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(true);
-  const [loader, setLoader] = useState({ open: false, text: "" });
+  // const [loader, setLoader] = useState({ open: false, text: "" });
+  const { setText, setLoader, text, loader } = useLoaderStore();
 
   const { data, status } = useSession();
 
@@ -49,7 +51,8 @@ const Login = () => {
     onSubmit: (values) => {
       const logUser = async () => {
         try {
-          setLoader({ open: true, text: "Submit" });
+          setLoader(true);
+          setText("Logging in...");
           const data: any = await signIn("credentials", {
             email: values.email,
             password: values.password,
@@ -65,7 +68,9 @@ const Login = () => {
           setError(error.response.data.error);
           console.log("🚀 ~ createUser ~ error:", error);
         } finally {
-          setLoader({ open: false, text: "" });
+          // setLoader({ open: false, text: "" });
+          setLoader(false);
+          setText("");
         }
       };
       logUser();
@@ -73,7 +78,7 @@ const Login = () => {
   });
   return (
     <>
-      <Loader loading={loader.open} text={loader.text} />
+      <Loader loading={loader} text={text} />
       {!loading ? (
         <section className="w-full min-h-screen flex gap-3 lg:gap-0 flex-col md:flex-row justify-evenly items-center p-5 md:p-10 ">
           <div className=" w-full md:w-1/2 flex md:p-6 flex-col justify-start items-start">

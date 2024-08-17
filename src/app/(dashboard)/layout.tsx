@@ -35,12 +35,7 @@ export default function RootLayout({
           </Suspense>
         </header>
         <main className="px-4 w-full flex items-start h-[calc(100vh-136px)] xl:h-[calc(100vh-88px)] relative ">
-          <div className="w-1/2 lg:w-1/4 h-full p-4 left-0 -top-2 -bottom-0 hidden lg:block  absolute lg:relative bg-backgroundColor lg:bg-transparent  ">
-            <LeftSidebar
-            // active={activeLeftSidebar}
-            // setActive={setActiveLeftSidebar}
-            />
-          </div>
+          <LeftSidebar />
           <div className="w-full lg:w-3/4 xl:w-2/4  h-[calc(100vh-136px)] xl:h-[calc(100vh-88px)]  ">
             <ToastContainer
               position="bottom-left"

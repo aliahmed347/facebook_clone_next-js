@@ -17,10 +17,12 @@ import * as yup from "yup";
 import { authOptions } from "../../../../pages/api/auth/[...nextauth]";
 import { getSession, useSession } from "next-auth/react";
 import Loader from "@/components/loader";
+import useLoaderStore from "../../../../store/loaderStore";
 
 const Register = () => {
   const [loading, setLoading] = useState<boolean>(true);
-  const [loader, setLoader] = useState({ open: false, text: "" });
+  // const [loader, setLoader] = useState({ open: false, text: "" });
+  const { setText, setLoader, text, loader } = useLoaderStore();
 
   const [step, setStep] = useState<number>(0);
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -85,7 +87,8 @@ const Register = () => {
   };
 
   const handleSubmitOTP = async () => {
-    setLoader({ open: true, text: "Submit OTP" });
+    setLoader(true);
+    setText("Verifying OTP...");
     if (otp.length === 6) {
       // Simulate OTP submission (replace with your API call)
       console.log("Submitting OTP:", otp);
@@ -104,7 +107,8 @@ const Register = () => {
         console.log("🚀 ~ handleSubmitOTP ~ error:", error);
         setError(error.response.data.error);
       } finally {
-        setLoader({ open: false, text: "" });
+        setLoader(false);
+        setText("");
       }
     } else {
       console.log("Please enter all 6 digits of the OTP");
@@ -158,7 +162,9 @@ const Register = () => {
 
   const createUser = async () => {
     try {
-      setLoader({ open: true, text: "Create account" });
+      // setLoader({ open: true, text: "Create account" });
+      setLoader(true);
+      setText("Creating account...");
       const user = await axios({
         url: "api/auth/register/createAccount",
         method: "POST",
@@ -169,13 +175,16 @@ const Register = () => {
     } catch (error) {
       console.log("🚀 ~ createUser ~ error:", error);
     } finally {
-      setLoader({ open: false, text: "" });
+      setLoader(false);
+      setText("");
     }
   };
 
   const sendOTP = async () => {
     try {
-      setLoader({ open: true, text: "Request otp" });
+      // setLoader({ open: true, text: "Request otp" });
+      setLoader(true);
+      setText("Requesting OTP...");
       const OTP: any = await axios({
         url: "api/email/sendRegistrationOTP",
         method: "POST",
@@ -191,7 +200,8 @@ const Register = () => {
       setError(error.response.data.error);
       console.log("🚀 ~ createUser ~ error:", error);
     } finally {
-      setLoader({ open: false, text: "" });
+      setLoader(false);
+      setText("");
     }
   };
 
@@ -210,7 +220,7 @@ const Register = () => {
 
   return (
     <>
-      <Loader loading={loader.open} text={loader.text} />
+      <Loader loading={loader} text={text} />
       {!loading ? (
         <section className="w-full min-h-screen flex gap-3 lg:gap-0 flex-col lg:flex-row justify-evenly items-center p-5 md:p-10 ">
           <div className=" w-full lg:w-1/2 flex md:p-6 flex-col justify-start items-start">

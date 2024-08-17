@@ -37,11 +37,11 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+// export const config = {
+//   api: {
+//     bodyParser: false,
+//   },
+// };
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== "POST") {
     return res.status(StatusCodes.BAD_REQUEST).json({
@@ -56,22 +56,24 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       return res.status(StatusCodes.UNAUTHORIZED).json({ error: "Unauthorized" });
     }
 
-    await MiddlewareRunner(req, res, upload.single("media"));
+    // await MiddlewareRunner(req, res, upload.single("media"));
 
-    const { content, mediaType } = req.body;
-    const file = (req as MulterRequest).file;
+    const { content, mediaType, media, height, width } = req.body;
+    // const file = (req as MulterRequest).file;
 
-    let relativePath;
+    // let relativePath;
 
-    if (file) {
-      relativePath = "asset/uploads/posts_media/" + file.filename;
-    }
+    // if (file) {
+    //   relativePath = "asset/uploads/posts_media/" + file.filename;
+    // }
 
     const post = await (await (await (await POST.create({
       content,
-      media: relativePath,
+      media,
       mediaType,
       author: user._id,
+      height,
+      width,
     })).populate("author")).populate({ path: 'comments', populate: { path: 'replies' } })).populate({ path: 'comments', populate: { path: 'author' } });
 
     return res.status(StatusCodes.OK).json({ post });
