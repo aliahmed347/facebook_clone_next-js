@@ -20,11 +20,13 @@ import { CustomToastWithLink } from "../../../utils/customToast";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import useLoaderStore from "../../../store/loaderStore";
+import { RotatingLines } from "react-loader-spinner";
 
 const CreatePost = () => {
   // const [loading, setLoading] = useState(false);
   const { loader, setText, setLoader, text } = useLoaderStore();
   const [user, setUser] = useState<any>({});
+  const [posting, setPosting] = useState(false);
   const router = useRouter();
 
   const { data, status } = useSession();
@@ -118,7 +120,7 @@ const CreatePost = () => {
     });
   };
   const submitHandler = async () => {
-    // setLoading(true);
+    setPosting(true);
     setLoader(true);
     setText("Posting");
     try {
@@ -158,6 +160,7 @@ const CreatePost = () => {
       console.log("🚀 ~ submitHandler ~ error:", error);
     } finally {
       setLoader(false);
+      setPosting(false);
       setText("");
     }
   };
@@ -314,17 +317,40 @@ const CreatePost = () => {
                   </div>
                 </div>
               )}
-              <Button
-                onClick={submitHandler}
-                fullWidth
-                className="bg-primary mt-2"
-                placeholder={undefined}
-                onPointerEnterCapture={undefined}
-                onPointerLeaveCapture={undefined}
-                disabled={createPost.media || createPost.content ? false : true}
-              >
-                post
-              </Button>
+              {posting ? (
+                <Button
+                  className="bg-primary mt-2 flex justify-center items-center gap-2"
+                  fullWidth
+                  placeholder={undefined}
+                  onPointerEnterCapture={undefined}
+                  onPointerLeaveCapture={undefined}
+                  disabled={true}
+                >
+                  <RotatingLines
+                    visible={true}
+                    width="20"
+                    strokeWidth="3"
+                    animationDuration="1"
+                    ariaLabel="rotating-lines-loading"
+                    strokeColor="#d9d6f1"
+                  />
+                  Posting...
+                </Button>
+              ) : (
+                <Button
+                  onClick={submitHandler}
+                  fullWidth
+                  className="bg-primary mt-2"
+                  placeholder={undefined}
+                  onPointerEnterCapture={undefined}
+                  onPointerLeaveCapture={undefined}
+                  disabled={
+                    createPost.media || createPost.content ? false : true
+                  }
+                >
+                  post
+                </Button>
+              )}
             </div>
           </Modal>
         </>
@@ -333,13 +359,8 @@ const CreatePost = () => {
       {status === "authenticated" && (
         <div className="bg-white rounded-lg p-2 ">
           <div className="flex justify-start items-center gap-4">
-            <Link href="/">
-              <Image
-                src="/asset/images/profile.png"
-                alt="user"
-                width={40}
-                height={40}
-              />
+            <Link href={`/user/${user._id}`}>
+              <Image src={user.avatar} alt="user" width={40} height={40} />
             </Link>
             <input
               type="text"

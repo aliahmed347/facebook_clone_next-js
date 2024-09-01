@@ -1,9 +1,31 @@
+"use client";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { leftSidebarItems } from "../../../utils/leftsidebarItems";
 import { IconPlus } from "@tabler/icons-react";
+import axios from "axios";
+import { IUser } from "@/types";
+import FollowButton from "../FollowButton/page";
+import Link from "next/link";
 
 const RightSidebar = () => {
+  const [users, setUsers] = useState<IUser[]>();
+
+  useEffect(() => {
+    getSuggestedPeople();
+  }, []);
+
+  const getSuggestedPeople = async () => {
+    try {
+      const { data } = await axios("/api/friend/suggestedPeople", {
+        method: "GET",
+      });
+      setUsers(data.suggestedPeople);
+    } catch (error) {
+      console.log("🚀 ~ getSuggestedPeople ~ error:", error);
+    }
+  };
+
   return (
     <div className="w-full my-2 h-[calc(100vh-136px)] xl:h-[calc(100vh-88px)] overflow-y-auto no-scrollbar text-primaryText ">
       <div className="">
@@ -36,18 +58,18 @@ const RightSidebar = () => {
         <h2 className="text-base text-secondaryText">Suggested people</h2>
 
         <ul className="mt-3 mr-8">
-          {leftSidebarItems.map((item, index) => (
-            <li
-              key={index}
-              className="flex justify-start items-center gap-3 hover:bg-[#E4E6E9] px-2 py-2 cursor-pointer rounded-lg "
-            >
-              <Image
-                src="/asset/images/profile.png"
-                alt="user"
-                width={30}
-                height={30}
-              />
-              <h4 className="text-base font-medium">Royal Ahmed {index + 1}</h4>
+          {users?.map((user, index) => (
+            <li key={index} className="  px-2 py-2 cursor-pointer rounded-lg bg-white">
+              <Link
+                href={`/user/${user._id}`}
+                className="flex items-center gap-3 mb-2 hover:bg-[#E4E6E9] p-2 rounded-lg"
+              >
+                <Image src={user.avatar} alt="user" width={50} height={50} />
+                <h4 className="text-lg font-semibold">
+                  {user.firstName + " " + user.lastName}{" "}
+                </h4>
+              </Link>
+              <FollowButton user={user} refreshHandler={getSuggestedPeople} />
             </li>
           ))}
         </ul>

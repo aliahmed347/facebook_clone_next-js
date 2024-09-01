@@ -6,7 +6,7 @@ const PostListSkelton = () => {
       {[1, 2, 3, 4, 5, 6].map((item) => {
         return (
           <>
-            <div className="w-full bg-white rounded-xl  ">
+            <div className="w-full bg-white rounded-xl mt-4 ">
               <div className="flex justify-between items-center gap-3 w-full p-2 ">
                 <div className="w-12 h-12 rounded-full bg-gray-500 "></div>
                 <div className=" bg-gray-500 h-12 w-full rounded-lg "></div>

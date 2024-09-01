@@ -6,10 +6,14 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { getSession, useSession } from "next-auth/react";
 import PostListSkelton from "@/components/Skeltons/PostListSkelton";
+import { IPost } from "@/types";
+import axios from "axios";
 
 const Page = () => {
   const router = useRouter();
-  const [Loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [loadingPosts, setLoadingPosts] = useState(true);
+  const [posts, setPosts] = useState<IPost[]>();
   const { data, status } = useSession();
 
   useEffect(() => {
@@ -21,19 +25,38 @@ const Page = () => {
     }
   }, [status, data]);
 
+  const getAllPosts = async () => {
+    try {
+      setLoadingPosts(true);
+      const res = await axios("api/posts/getAllPosts", {
+        method: "POST",
+      });
+      setPosts(res.data.posts);
+    } catch (error) {
+      console.log("🚀 ~ getAllPosts ~ error:", error);
+    } finally {
+      setLoadingPosts(false);
+    }
+  };
+  useEffect(() => {
+    getAllPosts();
+  }, []);
   return (
-    <section className="w-  full  flex justify-center items-center py-3 ">
+    <section className="w-full flex justify-center items-center py-3 ">
       <div className="w-full lg:w-3/4 h-[calc(100vh-136px)] xl:h-[calc(100vh-88px)] overflow-y-auto  no-scrollbar ">
-        {Loading ? (
+        {loading ? (
           <>
             <CreatePostSkelton />
-            <PostListSkelton />
           </>
         ) : (
           <>
             <CreatePost />
-            <PostsList />
           </>
+        )}
+        {loadingPosts ? (
+          <PostListSkelton />
+        ) : (
+          posts && <PostsList posts={posts} />
         )}
       </div>
     </section>

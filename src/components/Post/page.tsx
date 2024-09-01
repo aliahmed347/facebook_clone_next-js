@@ -14,6 +14,7 @@ import axios from "axios";
 import { formatDistanceToNowStrict } from "date-fns";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { BiLike } from "react-icons/bi";
 import ReactPlayer from "react-player";
@@ -24,6 +25,7 @@ const Post = ({ myPost }: any) => {
   const [commentOpen, setCommentOpen] = useState(false);
   const { author } = post;
   const { data }: any = useSession();
+  const router = useRouter();
 
   const textareaRef: any = useRef(null);
 
@@ -119,7 +121,7 @@ const Post = ({ myPost }: any) => {
             height={35}
             className="cursor-pointer"
           />
-          <div className="">
+          <div className="" onClick={() => router.push(`/user/${author._id}`)}>
             <h4 className="text-sm font-medium cursor-pointer  hover:underline ">
               {author.firstName + " " + author.lastName}
             </h4>

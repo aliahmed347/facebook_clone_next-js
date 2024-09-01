@@ -11,13 +11,13 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import NavbarItems from "../../../utils/navbarItems";
 import { usePathname, useRouter } from "next/navigation";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import useLoaderStore from "../../../store/loaderStore";
 
 const Navbar = () => {
   const pathname = usePathname();
   const { sidebar, setSidebar } = useLoaderStore();
-
+  const { data }: any = useSession();
   const [profile, setProfile] = useState(false);
 
   const router = useRouter();
@@ -32,7 +32,7 @@ const Navbar = () => {
     }
   };
   return (
-    <nav className="bg-white shadow-[0_4px_12px_rgba(0,0,0,0.1)] sticky z-[9999] top-0 w-full py-2 px-4 ">
+    <nav className="bg-white shadow-[0_4px_12px_rgba(0,0,0,0.1)] sticky z-[99] top-0 w-full py-2 px-4 ">
       <div className="w-full  lg:hidden flex justify-between gap-1  ">
         <Image src="/asset/images/logo.png" alt="logo" width={40} height={40} />
         <div className="flex gap-1">
@@ -146,7 +146,10 @@ const Navbar = () => {
             {profile && (
               <div className="absolute w-40 bg-white top-14 right-4 p-1 rounded-lg ">
                 <ul className="w-full h-full">
-                  <li className="cursor-pointer hover:opacity-50 p-1 mt-1  ">
+                  <li
+                    className="cursor-pointer hover:opacity-50 p-1 mt-1  "
+                    onClick={() => router.push(`/user/${data.user._id}`)}
+                  >
                     Profile
                   </li>
                   <li className="cursor-pointer hover:opacity-50 p-1 mt-1 ">

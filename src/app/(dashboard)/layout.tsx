@@ -26,38 +26,40 @@ export default function RootLayout({
     <html lang="en">
       <head></head>
       <body className={` ${poppins.className} w-full bg-backgroundColor `}>
-        <header className="relative h-28 lg:h-16  ">
-          <Suspense fallback={<p>Loading feed...</p>}>
-            <Navbar
-            // active={activeLeftSidebar}
-            // setActive={setActiveLeftSidebar}
-            />
-          </Suspense>
-        </header>
-        <main className="px-4 w-full flex items-start h-[calc(100vh-136px)] xl:h-[calc(100vh-88px)] relative ">
-          <LeftSidebar />
-          <div className="w-full lg:w-3/4 xl:w-2/4  h-[calc(100vh-136px)] xl:h-[calc(100vh-88px)]  ">
-            <ToastContainer
-              position="bottom-left"
-              autoClose={5000}
-              hideProgressBar
-              newestOnTop={false}
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-              theme="light"
-              transition={Flip}
-            />
-            <AuthProvider>{children}</AuthProvider>
-          </div>
-          <div className=" lg:w-1/4 hidden lg:block ">
-            <RightSidebar />
-          </div>
-        </main>
-        <footer className="h-2 ">
-          {/* <p>Copyright clam @ {Date()}</p> */}
-        </footer>
+        <AuthProvider>
+          <header className="relative h-28 lg:h-16  ">
+            <Suspense fallback={<p>Loading feed...</p>}>
+              <Navbar
+              // active={activeLeftSidebar}
+              // setActive={setActiveLeftSidebar}
+              />
+            </Suspense>
+          </header>
+          <main className="px-4 w-full flex items-start h-[calc(100vh-136px)] xl:h-[calc(100vh-88px)] relative ">
+            <LeftSidebar />
+            <div className="w-full lg:w-3/4 xl:w-2/4  h-[calc(100vh-136px)] xl:h-[calc(100vh-88px)]  ">
+              <ToastContainer
+                position="bottom-left"
+                autoClose={5000}
+                hideProgressBar
+                newestOnTop={false}
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+                transition={Flip}
+              />
+              {children}
+            </div>
+            <div className=" lg:w-1/4 hidden lg:block ">
+              <RightSidebar />
+            </div>
+          </main>
+          <footer className="h-2 ">
+            {/* <p>Copyright clam @ {Date()}</p> */}
+          </footer>
+        </AuthProvider>
       </body>
     </html>
   );
