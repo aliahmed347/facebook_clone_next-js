@@ -23,6 +23,7 @@ const PostSchema = new mongoose.Schema(
       ref: "User",
       require: true,
     },
+
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
     shares: {

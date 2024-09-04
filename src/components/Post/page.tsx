@@ -1,4 +1,5 @@
 // "use client";
+import { IPost } from "@/types";
 import {
   IconH1,
   IconHeart,
@@ -14,15 +15,19 @@ import axios from "axios";
 import { formatDistanceToNowStrict } from "date-fns";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { BiLike } from "react-icons/bi";
+import { RotatingLines } from "react-loader-spinner";
 import ReactPlayer from "react-player";
 
 const Post = ({ myPost }: any) => {
-  const [post, setPost] = useState<any>(myPost);
+  const [post, setPost] = useState<IPost>(myPost);
   const [comment, setComment] = useState<string>("");
   const [commentOpen, setCommentOpen] = useState(false);
+  const [loadingLike, setLoadingLike] = useState(true);
+  const [loadingComment, setLoadingComment] = useState(false);
   const { author } = post;
   const { data }: any = useSession();
   const router = useRouter();
@@ -41,6 +46,7 @@ const Post = ({ myPost }: any) => {
       adjustHeight();
       textarea.addEventListener("input", adjustHeight);
     }
+    setLoadingLike(false);
 
     return () => {
       if (textarea) {
@@ -50,6 +56,7 @@ const Post = ({ myPost }: any) => {
   }, []);
 
   const likePostHandler = async (id: string) => {
+    setLoadingLike(true);
     try {
       const res = await axios(
         post.likes.includes(data?.user?._id)
@@ -64,10 +71,13 @@ const Post = ({ myPost }: any) => {
       setPost(res.data.post);
     } catch (error) {
       console.log("🚀 ~ likePostHandler ~ error:", error);
+    } finally {
+      setLoadingLike(false);
     }
   };
   const CommentHandler = async (id: string) => {
     try {
+      setLoadingComment(true);
       const res = await axios("api/posts/comment/commentOnPost", {
         method: "POST",
         data: {
@@ -86,6 +96,8 @@ const Post = ({ myPost }: any) => {
       });
     } catch (error) {
       console.log("🚀 ~ likePostHandler ~ error:", error);
+    } finally {
+      setLoadingComment(false);
     }
   };
   const CommentLikeHandler = async (id: string, commentId: string) => {
@@ -171,7 +183,7 @@ const Post = ({ myPost }: any) => {
         <p>{post.likes.length} Likes</p>
         <div className="flex gap-2">
           <p>{post.comments.length} Comments</p>
-          <p>23 Share</p>
+          <p>{post.shares ? post.shares : 0} Share</p>
         </div>
       </div>
       <hr />
@@ -182,11 +194,23 @@ const Post = ({ myPost }: any) => {
           }   `}
           onClick={() => likePostHandler(post._id)}
         >
-          {post.likes.includes(data?.user?._id) ? (
+          {loadingLike ? (
+            <RotatingLines
+              visible={true}
+              width="20"
+              strokeWidth="3"
+              animationDuration="1"
+              ariaLabel="rotating-lines-loading"
+              strokeColor={
+                post.likes.includes(data?.user?._id) ? "#0866FF" : " #d9d6f1"
+              }
+            />
+          ) : post.likes.includes(data?.user?._id) ? (
             <IconThumbUpFilled />
           ) : (
             <IconThumbUp />
           )}
+
           <p className="text-sm select-none">Like</p>
         </div>
         <div
@@ -205,69 +229,65 @@ const Post = ({ myPost }: any) => {
       {commentOpen && (
         <>
           <div className="w-full px-4 flex gap-2 flex-col">
-            {post.comments.map(
-              (comment: {
-                _id: string;
-                author: { firstName: string; lastName: string; avatar: string };
-                content: string;
-                likes: any[];
-              }) => {
-                return (
-                  <div className="bg-backgroundColor rounded-lg p-2 w-full">
-                    <div className="w-full flex items-center gap-1">
-                      <Image
-                        alt="user"
-                        src={comment?.author?.avatar}
-                        width={20}
-                        height={20}
-                      />
-                      <p className="text-xs font-extralight cursor-pointer hover:underline">
-                        {comment?.author?.firstName +
-                          " " +
-                          comment?.author?.lastName}
-                      </p>
-                    </div>
-                    <div className=" w-full flex justify-between">
-                      <p className="text-sm font-normal mt-1">
-                        {comment.content}
-                      </p>
-                    </div>
-                    <div className="w-full flex justify-end items-end  gap-4 ">
-                      <div className="flex justify-center items-center gap-1">
-                        {comment?.likes?.includes(data?.user?._id) ? (
-                          <IconHeartFilled
-                            size={15}
-                            className="cursor-pointer text-primary"
-                            onClick={() =>
-                              CommentLikeHandler(post?._id, comment?._id)
-                            }
-                          />
-                        ) : (
-                          <IconHeart
-                            size={15}
-                            className="cursor-pointer"
-                            onClick={() =>
-                              CommentLikeHandler(post?._id, comment?._id)
-                            }
-                          />
-                        )}
-                        <p className="text-[10px] font-thin mt-1">
-                          {comment?.likes?.length}
-                        </p>
-                      </div>
-                      <div className="flex justify-center items-center gap-1">
-                        <IconMessageReply size={15} />
-                        <p className="text-[10px] font-thin mt-1">
-                          {comment?.likes?.length}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* <div className="flex"></div> */}
+            {post.comments.map((comment) => {
+              return (
+                <div className="bg-backgroundColor rounded-lg p-2 w-full">
+                  <div className="w-full flex items-center gap-1">
+                    <Image
+                      alt="user"
+                      src={comment?.author?.avatar}
+                      width={20}
+                      height={20}
+                    />
+                    <Link
+                      href={`/user/${comment?.author._id}`}
+                      className="text-xs font-extralight cursor-pointer hover:underline"
+                    >
+                      {comment?.author?.firstName +
+                        " " +
+                        comment?.author?.lastName}
+                    </Link>
                   </div>
-                );
-              }
-            )}
+                  <div className=" w-full flex justify-between">
+                    <p className="text-sm font-normal mt-1">
+                      {comment.content}
+                    </p>
+                  </div>
+                  <div className="w-full flex justify-end items-end  gap-4 ">
+                    <div className="flex justify-center items-center gap-1">
+                      {comment?.likes?.includes(data?.user?._id) ? (
+                        <IconHeartFilled
+                          size={15}
+                          className="cursor-pointer text-primary"
+                          onClick={() =>
+                            CommentLikeHandler(post?._id, comment?._id)
+                          }
+                        />
+                      ) : (
+                        <IconHeart
+                          size={15}
+                          className="cursor-pointer"
+                          onClick={() =>
+                            CommentLikeHandler(post?._id, comment?._id)
+                          }
+                        />
+                      )}
+                      <p className="text-[10px] font-thin mt-1">
+                        {comment?.likes?.length}
+                      </p>
+                    </div>
+                    <div className="flex justify-center items-center gap-1">
+                      <IconMessageReply size={15} />
+                      <p className="text-[10px] font-thin mt-1">
+                        {comment?.replies?.length}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* <div className="flex"></div> */}
+                </div>
+              );
+            })}
           </div>
           <div className="w-full p-2   ">
             <div className="w-full flex justify-between gap-2  ">
@@ -284,7 +304,7 @@ const Post = ({ myPost }: any) => {
                   value={comment}
                   ref={textareaRef}
                   placeholder="Write a comment..."
-                  className=" w-full p-2 text-sm resize-none overflow-hidden border-0 outline-none rounded-t-xl "
+                  className=" w-full p-2 text-sm resize-none overflow-hidden border-0 outline-none rounded-xl "
                 ></textarea>
                 {comment && (
                   <div className="float-right flex w-full justify-end items-center   ">
@@ -294,7 +314,18 @@ const Post = ({ myPost }: any) => {
                       onClick={() => comment && CommentHandler(post._id)}
                     >
                       Send
-                      <IconSend className="" size={18} />
+                      {loadingComment ? (
+                        <RotatingLines
+                          visible={true}
+                          width="20"
+                          strokeWidth="3"
+                          animationDuration="1"
+                          ariaLabel="rotating-lines-loading"
+                          strokeColor="#000000"
+                        />
+                      ) : (
+                        <IconSend className="" size={18} />
+                      )}
                     </button>
                   </div>
                 )}

@@ -59,17 +59,24 @@ const RightSidebar = () => {
 
         <ul className="mt-3 mr-8">
           {users?.map((user, index) => (
-            <li key={index} className="  px-2 py-2 cursor-pointer rounded-lg bg-white">
-              <Link
+            <li
+              key={index}
+              className=" flex items-center gap-4 px-2 py-2 cursor-pointer rounded-lg bg-white"
+            >
+              {/* <Link
                 href={`/user/${user._id}`}
                 className="flex items-center gap-3 mb-2 hover:bg-[#E4E6E9] p-2 rounded-lg"
               >
-                <Image src={user.avatar} alt="user" width={50} height={50} />
-                <h4 className="text-lg font-semibold">
-                  {user.firstName + " " + user.lastName}{" "}
-                </h4>
               </Link>
-              <FollowButton user={user} refreshHandler={getSuggestedPeople} />
+              */}
+              <div className="">
+                <Image src={user.avatar} alt="user" width={40} height={40} />
+              </div>
+              <div className="flex flex-col">
+                <h4 className="text-base">{user.firstName + " " + user.lastName} </h4>
+                <p className="text-sm text-secondaryText" >{user.friends.length} friends</p>
+              </div>
+              {/* <FollowButton user={user} refreshHandler={getSuggestedPeople} /> */}
             </li>
           ))}
         </ul>

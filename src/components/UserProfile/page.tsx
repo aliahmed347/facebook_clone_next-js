@@ -5,6 +5,7 @@ import { Button } from "@material-tailwind/react";
 import { useSession } from "next-auth/react";
 import { RotatingLines } from "react-loader-spinner";
 import FollowButton from "../FollowButton/page";
+import UpdateImage from "./UpdateImage";
 
 const UserProfile = ({
   user,
@@ -18,31 +19,18 @@ const UserProfile = ({
   setUser: (u: IUser) => void;
 }) => {
   const { data }: any = useSession();
-  const [loadFollow, setLoadFollow] = useState(false);
-
-  const followUser = async () => {
-    setLoadFollow(true);
-    try {
-      await handelFollow();
-    } catch (error) {
-      console.log("🚀 ~ followUser ~ error:", error);
-    } finally {
-      setLoadFollow(false);
-    }
-  };
-  const unfollowUser = async () => {
-    setLoadFollow(true);
-    try {
-      await handelUnFollow();
-    } catch (error) {
-      console.log("🚀 ~ followUser ~ error:", error);
-    } finally {
-      setLoadFollow(false);
-    }
-  };
+  const [imageModal, setImageModal] = useState<{
+    open: boolean;
+    name: "profile" | "cover" | "";
+  }>({ open: false, name: "" });
 
   return (
     <>
+      <UpdateImage
+        modalDetails={imageModal}
+        setModalDetails={setImageModal}
+        setUser={setUser}
+      />
       <div className="w-full relative mb-3">
         <div
           className={`relative w-full h-56 rounded-xl ${
@@ -58,17 +46,23 @@ const UserProfile = ({
             <img
               src={user.avatar}
               alt={user.firstName + " " + user.lastName}
-              className="w-24 h-24 rounded-full  border-4 border-white"
+              className="w-24 h-24 rounded-full  border-4 border-white bg-gradient-to-tr to-[#D1D5DB] from-blue-gray-500"
             />
             {user._id === data?.user?._id && (
               <button className="absolute right-1 bottom-1 bg-white rounded-full p-2 shadow-md translate-x-1/4 translate-y-1/4">
-                <FaCamera className="text-gray-500" />
+                <FaCamera
+                  className="text-gray-500"
+                  onClick={() => setImageModal({ name: "profile", open: true })}
+                />
               </button>
             )}
           </div>
           {user._id === data?.user?._id && (
             <button className="absolute right-2 bottom-2 bg-white rounded-full p-2 shadow-md">
-              <FaCamera className="text-gray-500" />
+              <FaCamera
+                className="text-gray-500"
+                onClick={() => setImageModal({ name: "cover", open: true })}
+              />
             </button>
           )}
         </div>

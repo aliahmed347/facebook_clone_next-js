@@ -20,7 +20,7 @@ export interface IUser {
 
 
 export interface IPost {
-  _id: Types.ObjectId;
+  _id: string;
   content: string;
   media: string;
   width: number;
@@ -28,9 +28,21 @@ export interface IPost {
   mediaType: "video" | 'image' | 'text';
   author: IUser;
   likes: string[];
-  comments: string[];
+  comments: IComment[];
+  shares: number;
   isDeleted: boolean;
   createdAt: string;
   updatedAt: string;
   __v: number;
+}
+
+export interface IComment {
+  _id: string;
+  content: string;
+  author: IUser;
+  post: IPost;
+  replies: IComment[];
+  likes: string[];
+  createdAt: Date;
+  updatedAt: Date;
 }
