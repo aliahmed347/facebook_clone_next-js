@@ -31,7 +31,8 @@ const UserProfile = ({
         setModalDetails={setImageModal}
         setUser={setUser}
       />
-      <div className="w-full relative mb-3">
+
+      <div className="w-full relative mb-1  ">
         <div
           className={`relative w-full h-56 rounded-xl ${
             user.banner
@@ -72,12 +73,15 @@ const UserProfile = ({
             <h2 className="text-xl font-semibold">
               {user.firstName + " " + user.lastName}
             </h2>
-            <p>
+            <p className="text-sm text-secondaryText">
               <span>{user?.friends?.length}</span> friends
             </p>
           </div>
           <FollowButton setUser={setUser} user={user} />
         </div>
+      </div>
+      <div className="w-full text-start mb-3">
+        <p className="text-secondaryText text-sm">{user?.bio}</p>
       </div>
     </>
   );

@@ -21,22 +21,21 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import useLoaderStore from "../../../store/loaderStore";
 import { RotatingLines } from "react-loader-spinner";
+import useUserStore from "../../../store/userStore";
 
 const CreatePost = () => {
   // const [loading, setLoading] = useState(false);
   const { loader, setText, setLoader, text } = useLoaderStore();
-  const [user, setUser] = useState<any>({});
   const [posting, setPosting] = useState(false);
   const router = useRouter();
+
+  const { user } = useUserStore();
 
   const { data, status } = useSession();
 
   useEffect(() => {
     if (status === "unauthenticated") {
       return router.push("/login");
-    }
-    if (data?.user) {
-      setUser(data?.user);
     }
   }, [data, status]);
 

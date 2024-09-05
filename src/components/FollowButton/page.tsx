@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import React, { useState } from "react";
 import { FaRegEdit, FaUser, FaUserMinus, FaUserPlus } from "react-icons/fa";
 import { RotatingLines } from "react-loader-spinner";
+import UpdateUser from "../UserProfile/UpdateUser";
 
 const FollowButton = ({
   user,
@@ -18,6 +19,9 @@ const FollowButton = ({
 }) => {
   const { data }: any = useSession();
   const [loadFollow, setLoadFollow] = useState(false);
+  const [userModal, setUserModal] = useState<{
+    open: boolean; 
+  }>({ open: false });
 
   const handleFollow = async () => {
     setLoadFollow(true);
@@ -77,6 +81,14 @@ const FollowButton = ({
 
   return (
     <>
+      {setUser && (
+        <UpdateUser
+          modalDetails={userModal}
+          setModalDetails={setUserModal}
+          setUser={setUser}
+          user={user}
+        />
+      )}
       {loadFollow ? (
         <>
           <Button
@@ -104,6 +116,7 @@ const FollowButton = ({
           placeholder={undefined}
           onPointerEnterCapture={undefined}
           onPointerLeaveCapture={undefined}
+          onClick={() => setUserModal({ open: true })}
         >
           <FaRegEdit className="" size={20} />
           Update
@@ -129,7 +142,7 @@ const FollowButton = ({
           onPointerLeaveCapture={undefined}
           onClick={handleAccept}
         >
-          <FaUserPlus  className="" size={20} />
+          <FaUserPlus className="" size={20} />
           Accept Request
         </Button>
       ) : user.friends.some((ele) => ele._id === data.user._id) ? (

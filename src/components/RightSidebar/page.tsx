@@ -7,6 +7,7 @@ import axios from "axios";
 import { IUser } from "@/types";
 import FollowButton from "../FollowButton/page";
 import Link from "next/link";
+import useUserStore from "../../../store/userStore";
 
 const RightSidebar = () => {
   const [users, setUsers] = useState<IUser[]>();
@@ -59,7 +60,8 @@ const RightSidebar = () => {
 
         <ul className="mt-3 mr-8">
           {users?.map((user, index) => (
-            <li
+            <Link
+              href={`/user/${user._id}`}
               key={index}
               className=" flex items-center gap-4 px-2 py-2 cursor-pointer rounded-lg bg-white"
             >
@@ -73,11 +75,15 @@ const RightSidebar = () => {
                 <Image src={user.avatar} alt="user" width={40} height={40} />
               </div>
               <div className="flex flex-col">
-                <h4 className="text-base">{user.firstName + " " + user.lastName} </h4>
-                <p className="text-sm text-secondaryText" >{user.friends.length} friends</p>
+                <h4 className="text-base">
+                  {user.firstName + " " + user.lastName}{" "}
+                </h4>
+                <p className="text-sm text-secondaryText">
+                  {user.friends.length} friends
+                </p>
               </div>
               {/* <FollowButton user={user} refreshHandler={getSuggestedPeople} /> */}
-            </li>
+            </Link>
           ))}
         </ul>
       </div>

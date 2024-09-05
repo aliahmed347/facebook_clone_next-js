@@ -18,10 +18,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         if (!user) {
             return res.status(StatusCodes.UNAUTHORIZED).json({ error: "Unauthorized" });
         }
-        console.log("🚀 ~ handler ~ user._id:", user._id)
 
-        const { banner, avatar, bio, firstName, lastName, email, DOB, gender } = req.body;
-        console.log("🚀 ~ handler ~ req.body:", req.body)
+        const { banner, avatar, bio, firstName, lastName, DOB, gender } = req.body;
 
         const updateFields = {} as any;
 
@@ -30,7 +28,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         if (bio) updateFields.bio = bio;
         if (firstName) updateFields.firstName = firstName;
         if (lastName) updateFields.lastName = lastName;
-        if (email) updateFields.email = email;
         if (DOB) updateFields.DOB = DOB;
         if (gender) updateFields.gender = gender;
 
@@ -46,7 +43,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
 
 
-        console.log("🚀 ~ handler ~ dbUser:", dbUser)
         return res.status(StatusCodes.OK).json({ user: dbUser });
     } catch (error) {
         console.log("🚀 ~ handler ~ error:", error);

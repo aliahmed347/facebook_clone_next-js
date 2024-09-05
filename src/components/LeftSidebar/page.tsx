@@ -8,13 +8,14 @@ import { useSession } from "next-auth/react";
 import { IUser } from "@/types";
 import LeftSidebarSkelton from "../Skeltons/LeftSidebar";
 import Link from "next/link";
+import useUserStore from "../../../store/userStore";
 
 const LeftSidebar = () => {
   const { data, status }: any = useSession();
   const { sidebar, setSidebar } = useLoaderStore();
-  const [user, setUser] = useState<IUser>();
   const router = useRouter();
   const [loading, setLoading] = useState<Boolean>(true);
+  const { user, loadUser } = useUserStore();
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -22,13 +23,12 @@ const LeftSidebar = () => {
       return router.push("/login");
     }
     if (data?.user) {
-      setUser(data?.user);
       setLoading(false);
     }
   }, [data, status]);
   return (
     <>
-      {loading ? (
+      {loading || loadUser ? (
         <LeftSidebarSkelton />
       ) : (
         <div
@@ -41,12 +41,9 @@ const LeftSidebar = () => {
               href={`/user/${user?._id}`}
               className="flex justify-start items-center gap-3 cursor-pointer"
             >
-              <Image
-                src="/asset/images/profile.png"
-                alt="user"
-                width={30}
-                height={30}
-              />
+              {user?.avatar && (
+                <Image src={user?.avatar} alt="user" width={30} height={30} />
+              )}
               <h4 className="text-base font-semibold">
                 {user?.firstName + " " + user?.lastName}
               </h4>

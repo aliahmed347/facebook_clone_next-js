@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import LeftSidebar from "@/components/LeftSidebar/page";
 import RightSidebar from "@/components/RightSidebar/page";
+import RenderChildren from "@/components/RenderChildren/page";
 import Navbar from "@/components/Navbar/page";
 import { Suspense } from "react";
 import { Flip, ToastContainer, Zoom } from "react-toastify";
@@ -50,7 +51,8 @@ export default function RootLayout({
                 theme="light"
                 transition={Flip}
               />
-              {children}
+              {/* {children} */}
+              <RenderChildren children={children} />
             </div>
             <div className=" lg:w-1/4 hidden lg:block ">
               <RightSidebar />

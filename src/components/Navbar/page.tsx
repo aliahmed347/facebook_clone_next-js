@@ -16,13 +16,13 @@ import useLoaderStore from "../../../store/loaderStore";
 import axios from "axios";
 import { IUser } from "@/types";
 import NavbarSkelton from "@/components/Skeltons/Navbar";
+import useUserStore from "../../../store/userStore";
 const Navbar = () => {
   const pathname = usePathname();
   const { sidebar, setSidebar } = useLoaderStore();
   const { data }: any = useSession();
   const [profile, setProfile] = useState(false);
-  const [user, setUser] = useState<IUser>();
-  const [loading, setLoading] = useState<boolean>(true);
+  const { user, loadUser } = useUserStore();
 
   const router = useRouter();
   const logOut = async () => {
@@ -36,27 +36,9 @@ const Navbar = () => {
     }
   };
 
-  useEffect(() => {
-    getUser();
-  }, [data?.user]);
-
-  const getUser = async () => {
-    // setLoading(true);
-    setLoading(false);
-    try {
-      const { data: u_data } = await axios(`/api/user/${data.user._id}`, {
-        method: "GET",
-      });
-      setUser(u_data.user);
-    } catch (error) {
-      console.log("🚀 ~ getUser ~ error:", error);
-    } finally {
-    }
-  };
-
   return (
     <>
-      {loading ? (
+      {loadUser ? (
         <NavbarSkelton />
       ) : (
         <nav className="bg-white shadow-[0_4px_12px_rgba(0,0,0,0.1)] sticky z-[99] top-0 w-full py-2 px-4 ">
@@ -167,16 +149,14 @@ const Navbar = () => {
                 </button>
               </Tooltip>
               <div className="relative">
-                {user?.avatar && (
-                  <Image
-                    src={user?.avatar}
-                    alt="user"
-                    width={35}
-                    height={35}
-                    className="cursor-pointer hidden xl:block  "
-                    onClick={() => setProfile(!profile)}
-                  />
-                )}
+                <Image
+                  src={user?.avatar}
+                  alt="user"
+                  width={35}
+                  height={35}
+                  className="cursor-pointer hidden xl:block  "
+                  onClick={() => setProfile(!profile)}
+                />
                 {profile && (
                   <div className="absolute w-40 bg-white top-14 right-4 p-1 rounded-lg ">
                     <ul className="w-full h-full">
