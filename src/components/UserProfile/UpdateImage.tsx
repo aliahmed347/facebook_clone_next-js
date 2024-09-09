@@ -92,7 +92,7 @@ const UpdateImage = ({
 
       setUser(response.data.user);
       closeModalHandler();
-      toast("Image Updated Successfully");
+      toast("Image Updated Successfully", { type: "success" });
     } catch (error) {
       console.log("🚀 ~ submitHandler ~ error:", error);
     } finally {

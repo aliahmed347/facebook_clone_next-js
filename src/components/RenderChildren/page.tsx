@@ -4,7 +4,7 @@ import useUserStore from "../../../store/userStore";
 import axios from "axios";
 
 const RenderChildren = ({ children }: { children: React.ReactNode }) => {
-  const { setUser, user, setLoadUser } = useUserStore();
+  const { setUser, user, setLoadUser, setGroups } = useUserStore();
 
   const getUser = async () => {
     setLoadUser(true);
@@ -13,6 +13,7 @@ const RenderChildren = ({ children }: { children: React.ReactNode }) => {
         method: "GET",
       });
       setUser(data.user);
+      setGroups(data.groups);
     } catch (error) {
       console.log("🚀 ~ getUser ~ error:", error);
     } finally {

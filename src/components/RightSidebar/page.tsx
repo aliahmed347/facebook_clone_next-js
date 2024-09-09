@@ -49,7 +49,7 @@ const RightSidebar = () => {
             <div className="p-1 bg-[#D1D5DB] rounded-full  ">
               <IconPlus size={18} />
             </div>
-            <h4 className="text-base font-medium  ">Create New Group</h4>
+            <h4 className="text-base font-medium  whitespace-nowrap">Create New Group</h4>
           </div>
           <ul className="mt-2 mr-8">
             {groups &&
@@ -66,14 +66,14 @@ const RightSidebar = () => {
                     height={35}
                     className="border border-secondaryText rounded-full"
                   />
-                  <h4 className="text-base font-medium">{group.name}</h4>
+                  <h4 className="text-base font-medium whitespace-nowrap">{group.name}</h4>
                 </Link>
               ))}
           </ul>
         </div>
         <hr className="border-gray-500 border-1 my-3 " />
         <div className="">
-          <h2 className="text-base text-secondaryText">Suggested people</h2>
+          <h2 className="text-base text-secondaryText whitespace-nowrap">Suggested people</h2>
 
           <ul className="mt-3 mr-8">
             {users?.map((user, index) => (
@@ -98,10 +98,10 @@ const RightSidebar = () => {
                   />
                 </div>
                 <div className="flex flex-col">
-                  <h4 className="text-base">
+                  <h4 className="text-base whitespace-nowrap">
                     {user.firstName + " " + user.lastName}{" "}
                   </h4>
-                  <p className="text-sm text-secondaryText">
+                  <p className="text-sm text-secondaryText whitespace-nowrap">
                     {user.friends.length} friends
                   </p>
                 </div>

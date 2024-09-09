@@ -94,7 +94,7 @@ const UpdateImage = ({
 
       setGroup(response.data.group);
       closeModalHandler();
-      toast("Image Updated Successfully");
+      toast("Image Updated Successfully", { type: "success" });
     } catch (error) {
       console.log("🚀 ~ submitHandler ~ error:", error);
     } finally {

@@ -14,9 +14,9 @@ export const leftSidebarItems = [
     icon: "/saved.png",
     url: "/saved",
   },
-  {
-    label: "Videos",
-    icon: "/video.png",
-    url: "/videos",
-  },
+  // {
+  //   label: "Videos",
+  //   icon: "/video.png",
+  //   url: "/videos",
+  // },
 ];
