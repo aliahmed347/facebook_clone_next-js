@@ -154,7 +154,7 @@ const Navbar = () => {
                   alt="user"
                   width={35}
                   height={35}
-                  className="cursor-pointer hidden lg:block  "
+                  className="cursor-pointer hidden lg:block rounded-full "
                   onClick={() => setProfile(!profile)}
                 />
                 {profile && (

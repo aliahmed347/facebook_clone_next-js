@@ -44,7 +44,7 @@ const LeftSidebar = () => {
               className="flex justify-start items-center gap-3 cursor-pointer"
             >
               {user?.avatar && (
-                <Image src={user?.avatar} alt="user" width={30} height={30} />
+                <Image src={user?.avatar} alt="user" width={35} height={35} className="rounded-full" />
               )}
               <h4 className="text-base font-semibold whitespace-nowrap">
                 {user?.firstName + " " + user?.lastName}

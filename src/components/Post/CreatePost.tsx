@@ -201,7 +201,13 @@ const CreatePost = ({ group }: { group?: IGroup }) => {
                 href={`/user/${user._id}`}
                 className="flex justify-start items-center gap-3 cursor-pointer my-3"
               >
-                <Image src={user.avatar} alt="user" width={30} height={30} />
+                <Image
+                  src={user.avatar}
+                  alt="user"
+                  width={30}
+                  height={30}
+                  className="rounded-full"
+                />
                 <h4 className="text-base font-semibold">
                   {user.firstName + " " + user.lastName}
                 </h4>
@@ -374,7 +380,13 @@ const CreatePost = ({ group }: { group?: IGroup }) => {
         <div className="bg-white rounded-lg p-2 ">
           <div className="flex justify-start items-center gap-4">
             <Link href={`/user/${user._id}`}>
-              <Image src={user.avatar} alt="user" width={40} height={40} />
+              <Image
+                src={user.avatar}
+                alt="user"
+                width={40}
+                height={40}
+                className="rounded-full"
+              />
             </Link>
             <input
               type="text"
