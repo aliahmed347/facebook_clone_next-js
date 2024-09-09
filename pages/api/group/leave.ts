@@ -1,9 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import { NextApiRequest, NextApiResponse } from "next";
 import getServerSession from "../../../utils/getServerSession";
-import USER from "../../../src/models/User";
 import GROUP from "@/models/Group";
-
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method !== "POST") {
@@ -15,24 +13,19 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
         const user: any = await getServerSession(req, res);
 
-
         if (!user) {
-            return res.status(StatusCodes.UNAUTHORIZED).json({ error: "Unauthorized" });
+            return res
+                .status(StatusCodes.UNAUTHORIZED)
+                .json({ error: "Unauthorized" });
         }
 
-        const { banner, avatar, description, name, groupId } = req.body;
+        const { groupId, userId } = req.body;
 
-        const updateFields = {} as any;
-
-        if (avatar) updateFields.avatar = avatar;
-        if (banner) updateFields.banner = banner;
-        if (name) updateFields.name = name;
-        if (description) updateFields.description = description;
-
-        const dbGroup = await GROUP.findByIdAndUpdate(
-            groupId, // Directly use the user ID
-            updateFields,
+        const group = await GROUP.findByIdAndUpdate(
+            groupId,
+            { $pull: { members: userId } },
             { new: true }
+
         ).populate('members')
             .populate({
                 path: 'posts',
@@ -49,10 +42,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                     { path: 'author' }
                 ]
             })
-            .populate('admin')
+            .populate('admin');
 
-
-        return res.status(StatusCodes.OK).json({ group: dbGroup });
+        return res.status(StatusCodes.OK).json({ group });
     } catch (error) {
         console.log("🚀 ~ handler ~ error:", error);
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({

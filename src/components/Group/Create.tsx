@@ -15,9 +15,11 @@ interface modalDetails {
 const CreateGroup = ({
   modalDetails,
   setModalDetails,
+  handelRefresh
 }: {
   modalDetails: modalDetails;
   setModalDetails: (modalDetails: modalDetails) => void;
+  handelRefresh: () => void;
 }) => {
   const [uploading, setUploading] = useState(false);
 
@@ -51,7 +53,7 @@ const CreateGroup = ({
           });
           // setUser(response.data.user);
           closeModalHandler();
-          // toast("Group created successfully", { type: "success" });
+          handelRefresh()
           toast(
             <CustomToastWithLink
               message="Group created successfully"

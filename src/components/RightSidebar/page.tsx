@@ -34,7 +34,11 @@ const RightSidebar = () => {
 
   return (
     <>
-      <CreateGroup modalDetails={groupModal} setModalDetails={setGroupModal} />
+      <CreateGroup
+        modalDetails={groupModal}
+        setModalDetails={setGroupModal}
+        handelRefresh={getSuggestedPeopleAndGroup}
+      />
       <div className="w-full my-2 h-[calc(100vh-136px)] xl:h-[calc(100vh-88px)] overflow-y-auto no-scrollbar text-primaryText ">
         <div className="">
           <h2 className="text-base text-secondaryText">Group conversations</h2>
@@ -56,10 +60,11 @@ const RightSidebar = () => {
                   className="flex justify-start items-center gap-3 hover:bg-[#E4E6E9] px-2 py-2 cursor-pointer rounded-lg "
                 >
                   <Image
-                    src="/asset/images/profile.png"
+                    src={group.avatar}
                     alt="user"
                     width={35}
                     height={35}
+                    className="border border-secondaryText rounded-full"
                   />
                   <h4 className="text-base font-medium">{group.name}</h4>
                 </Link>
@@ -84,7 +89,13 @@ const RightSidebar = () => {
               </Link>
               */}
                 <div className="">
-                  <Image src={user.avatar} alt="user" width={40} height={40} />
+                  <Image
+                    src={user.avatar}
+                    alt="user"
+                    width={40}
+                    height={40}
+                    className="border border-secondaryText rounded-full"
+                  />
                 </div>
                 <div className="flex flex-col">
                   <h4 className="text-base">

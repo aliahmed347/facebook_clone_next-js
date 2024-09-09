@@ -4,7 +4,7 @@ import { FaCamera, FaRegEdit, FaUser, FaUserMinus } from "react-icons/fa";
 import { Button } from "@material-tailwind/react";
 import { useSession } from "next-auth/react";
 import { RotatingLines } from "react-loader-spinner";
-import FollowButton from "../FollowButton/page";
+import JoinButton from "../JoinButton/page";
 import UpdateImage from "./UpdateImage";
 
 const GroupProfile = ({
@@ -76,7 +76,7 @@ const GroupProfile = ({
               <span>{group?.members?.length}</span> members
             </p>
           </div>
-          {/* <FollowButton setUser={setUser} user={user} /> */}
+          <JoinButton group={group} setGroup={setGroup} />
         </div>
       </div>
       <div className="w-full text-start mb-3">

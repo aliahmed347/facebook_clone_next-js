@@ -95,10 +95,11 @@ const group = ({ params }: { params: { id: string } }) => {
                   //   handelUnFollow={handelUnFollow}
                 />
               )}
-              {group?.admin._id === data?.user._id && (
-                <CreatePost group={group} />
-              )}
-              {posts && <PostsList posts={posts} />}
+              {group?.admin._id === data?.user._id ||
+                (group?.members.some((m) => m._id === data?.user._id) && (
+                  <CreatePost group={group} />
+                ))}
+              {group?.posts && <PostsList posts={group.posts} />}
             </>
           )}
         </div>

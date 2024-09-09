@@ -56,7 +56,7 @@ export interface IGroup {
   banner: string;
   admin: IUser;
   members: IUser[];
-  posts: IPost;
+  posts: IPost[];
   createdAt: Date;
   updatedAt: Date;
   isDeleted: boolean;
