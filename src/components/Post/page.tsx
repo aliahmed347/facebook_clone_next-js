@@ -139,7 +139,7 @@ const Post = ({ myPost }: any) => {
             </div>
           ) : (
             <Image
-              src={author.avatar}
+              src={author?.avatar}
               alt="user"
               width={35}
               height={35}

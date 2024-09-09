@@ -5,7 +5,6 @@ import LeftSidebar from "@/components/LeftSidebar/page";
 import RightSidebar from "@/components/RightSidebar/page";
 import RenderChildren from "@/components/RenderChildren/page";
 import Navbar from "@/components/Navbar/page";
-import { Suspense } from "react";
 import { Flip, ToastContainer, Zoom } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AuthProvider from "../../../utils/authProvider";

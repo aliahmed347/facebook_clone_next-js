@@ -73,7 +73,7 @@ const LeftSidebar = () => {
             </ul>
             {/* <div className="w-full "></div> */}
             <div className="w-full mt-3">
-              <h3 className="text-lg font-semibold">Your Group</h3>
+              <h3 className="text-lg font-semibold">Your Groups</h3>
               {groups &&
                 groups.map((group, index) => (
                   <Link
