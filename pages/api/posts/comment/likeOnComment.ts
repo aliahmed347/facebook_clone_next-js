@@ -41,7 +41,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         }
 
 
-        const newPost = await POST.findOne({ _id: post }).populate("author").populate({ path: 'comments', populate: { path: 'replies' } }).populate({ path: 'comments', populate: { path: 'author' } })
+        const newPost = await POST.findOne({ _id: post }).populate("author").populate({ path: 'comments', populate: { path: 'replies' } }).populate({ path: 'comments', populate: { path: 'author' } }).populate('group')
 
 
         return res.status(StatusCodes.OK).json({ comments: newPost?.comments });

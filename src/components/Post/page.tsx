@@ -60,8 +60,8 @@ const Post = ({ myPost }: any) => {
     try {
       const res = await axios(
         post.likes.includes(data?.user?._id)
-          ? "api/posts/dislikePost"
-          : "api/posts/likePost",
+          ? "/api/posts/dislikePost"
+          : "/api/posts/likePost",
         {
           method: "POST",
           data: { postId: id },
@@ -78,7 +78,7 @@ const Post = ({ myPost }: any) => {
   const CommentHandler = async (id: string) => {
     try {
       setLoadingComment(true);
-      const res = await axios("api/posts/comment/commentOnPost", {
+      const res = await axios("/api/posts/comment/commentOnPost", {
         method: "POST",
         data: {
           post: id,
@@ -94,6 +94,7 @@ const Post = ({ myPost }: any) => {
           comments: res.data.comments,
         };
       });
+      setComment("");
     } catch (error) {
       console.log("🚀 ~ likePostHandler ~ error:", error);
     } finally {
@@ -102,7 +103,7 @@ const Post = ({ myPost }: any) => {
   };
   const CommentLikeHandler = async (id: string, commentId: string) => {
     try {
-      const res = await axios("api/posts/comment/likeOnComment", {
+      const res = await axios("/api/posts/comment/likeOnComment", {
         method: "POST",
         data: {
           post: id,
@@ -125,18 +126,41 @@ const Post = ({ myPost }: any) => {
   return (
     <div className="w-full bg-white rounded-xl ">
       <div className="flex justify-between w-full">
-        <div className="flex items-center gap-1 p-2 ">
-          <Image
-            src={author.avatar}
-            alt="user"
-            width={35}
-            height={35}
-            className="cursor-pointer"
-          />
-          <div className="" onClick={() => router.push(`/user/${author._id}`)}>
-            <h4 className="text-sm font-medium cursor-pointer  hover:underline ">
+        <div className="flex items-center gap-2 p-2 ">
+          {post.group ? (
+            <div className="w-15 h-15">
+              <Image
+                src={post.group?.avatar}
+                alt="user"
+                width={60}
+                height={60}
+                className=" cursor-pointer rounded-lg"
+              />
+            </div>
+          ) : (
+            <Image
+              src={author.avatar}
+              alt="user"
+              width={35}
+              height={35}
+              className="cursor-pointer border border-secondaryText rounded-full "
+            />
+          )}
+          <div className="flex flex-col ">
+            {post.group && (
+              <Link
+                href={`/group/${post.group._id}`}
+                className="text-sm font-semibold cursor-pointer  hover:underline "
+              >
+                {post.group.name}
+              </Link>
+            )}
+            <Link
+              href={`/user/${author._id}`}
+              className="text-sm font-medium cursor-pointer  hover:underline "
+            >
               {author.firstName + " " + author.lastName}
-            </h4>
+            </Link>
             <p className="text-xs text-secondaryText ">
               {formatDistanceToNowStrict(new Date(post.createdAt))}
             </p>

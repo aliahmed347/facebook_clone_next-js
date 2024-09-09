@@ -6,6 +6,7 @@ import getServerSession from "../../../utils/getServerSession";
 import fs from "fs";
 import MiddlewareRunner from "../../../utils/middlewareRunner";
 import { authOptions } from "../auth/[...nextauth]";
+import GROUP from "@/models/Group";
 interface MulterRequest extends NextApiRequest {
   file: Express.Multer.File;
 }
@@ -58,7 +59,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     // await MiddlewareRunner(req, res, upload.single("media"));
 
-    const { content, mediaType, media, height, width } = req.body;
+    const { content, mediaType, media, height, width, groupId } = req.body;
     // const file = (req as MulterRequest).file;
 
     // let relativePath;
@@ -67,14 +68,22 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     //   relativePath = "asset/uploads/posts_media/" + file.filename;
     // }
 
-    const post = await (await (await (await POST.create({
+    const post = await (await (await (await (await POST.create({
       content,
       media,
       mediaType,
       author: user._id,
       height,
       width,
-    })).populate("author")).populate({ path: 'comments', populate: { path: 'replies' } })).populate({ path: 'comments', populate: { path: 'author' } });
+      group: groupId ? groupId : null
+    })).populate("author")).populate({ path: 'comments', populate: { path: 'replies' } })).populate({ path: 'comments', populate: { path: 'author' } })).populate('group');
+
+
+    groupId &&
+      (await GROUP.findByIdAndUpdate(
+        { _id: groupId },
+        { $push: { posts: post._id } }
+      ));
 
     return res.status(StatusCodes.OK).json({ post });
   } catch (error) {

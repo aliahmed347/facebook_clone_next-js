@@ -30,7 +30,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             { _id: postId },
             { $push: { likes: user._id } },
             { new: true }
-        ).populate("author").populate({ path: 'comments', populate: { path: 'replies' } }).populate({ path: 'comments', populate: { path: 'author' } })
+        ).populate("author").populate({ path: 'comments', populate: { path: 'replies' } }).populate({ path: 'comments', populate: { path: 'author' } }).populate('group');
 
         return res.status(StatusCodes.OK).json({ post });
     } catch (error) {

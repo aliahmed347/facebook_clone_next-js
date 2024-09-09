@@ -20,7 +20,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         }
 
 
-        const dbPosts: any = await POST.find({ author: user._id }).populate({ path: 'comments', populate: { path: 'replies' } }).populate({ path: 'comments', populate: { path: 'author' } }).populate("author").sort({ createdAt: -1 });
+        const dbPosts: any = await POST.find({ author: user._id }).populate({ path: 'comments', populate: { path: 'replies' } }).populate({ path: 'comments', populate: { path: 'author' } }).populate("author").populate('group').sort({ createdAt: -1 });
 
 
         return res.status(StatusCodes.OK).json({ posts: dbPosts });

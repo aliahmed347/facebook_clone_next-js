@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const PostSchema = new mongoose.Schema(
+const GroupSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -9,6 +9,15 @@ const PostSchema = new mongoose.Schema(
     description: {
       type: String,
       require: true,
+    },
+    avatar: {
+      type: String,
+      default: "/asset/images/profile.png",
+      required: true,
+    },
+    banner: {
+      type: String,
+      default: null,
     },
     admin: {
       type: mongoose.Schema.Types.ObjectId,
@@ -26,6 +35,6 @@ const PostSchema = new mongoose.Schema(
 );
 
 (mongoose.models as any) = {};
-const POST = mongoose.model("Group", PostSchema);
+const GROUP = mongoose.model("Group", GroupSchema);
 
-export default POST;
+export default GROUP;

@@ -154,18 +154,19 @@ const Navbar = () => {
                   alt="user"
                   width={35}
                   height={35}
-                  className="cursor-pointer hidden xl:block  "
+                  className="cursor-pointer hidden lg:block  "
                   onClick={() => setProfile(!profile)}
                 />
                 {profile && (
-                  <div className="absolute w-40 bg-white top-14 right-4 p-1 rounded-lg ">
+                  <div className=" hidden lg:block absolute w-40 bg-white top-14 right-4 p-1 rounded-lg ">
                     <ul className="w-full h-full">
-                      <li
+                      <Link
+                        href={`/user/${data.user._id}`}
                         className="cursor-pointer hover:opacity-50 p-1 mt-1  "
-                        onClick={() => router.push(`/user/${data.user._id}`)}
+                        onClick={() => setProfile(!profile)}
                       >
                         Profile
-                      </li>
+                      </Link>
                       <li className="cursor-pointer hover:opacity-50 p-1 mt-1 ">
                         Settings
                       </li>
@@ -185,7 +186,7 @@ const Navbar = () => {
                 className="bg-primaryText bg-opacity-60"
               >
                 <button
-                  className="rounded-full h-10 w-10 bg-backgroundColor  justify-center items-center flex xl:hidden"
+                  className="rounded-full h-10 w-10 bg-backgroundColor  justify-center items-center flex lg:hidden"
                   onClick={() => setSidebar(!sidebar)}
                 >
                   <IconMenu2 size={24} className="text-primaryText" />

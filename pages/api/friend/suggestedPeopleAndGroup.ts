@@ -2,6 +2,7 @@ import { StatusCodes } from "http-status-codes";
 import { NextApiRequest, NextApiResponse } from "next";
 import getServerSession from "../../../utils/getServerSession";
 import USER from "@/models/User";
+import GROUP from "@/models/Group";
 
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -23,9 +24,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         })
             .select('-password')
             .populate('receiveRequests').populate('sentRequests').populate('friends')
+            .limit(5).sort({ createdAt: -1 });
+
+        const suggestedGroup = await GROUP.find({
+
+        })
+            .populate('members').populate('posts').populate('admin')
+            .limit(5).sort({ createdAt: -1 });
 
 
-        return res.status(StatusCodes.OK).json({ suggestedPeople });
+
+
+        return res.status(StatusCodes.OK).json({ suggestedPeople, suggestedGroup });
     } catch (error) {
         console.log("🚀 ~ handler ~ error:", error);
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({

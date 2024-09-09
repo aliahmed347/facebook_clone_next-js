@@ -36,13 +36,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 { new: true }
             )
 
-            newPost = await POST.findOne({ _id: post }).populate("author").populate({ path: 'comments', populate: { path: 'replies' } }).populate({ path: 'comments', populate: { path: 'author' } })
+            newPost = await POST.findOne({ _id: post }).populate("author").populate({ path: 'comments', populate: { path: 'replies' } }).populate({ path: 'comments', populate: { path: 'author' } }).populate('group')
         } else {
             newPost = await POST.findByIdAndUpdate(
                 { _id: post },
                 { $push: { comments: comment._id } },
                 { new: true }
-            ).populate("author").populate({ path: 'comments', populate: { path: 'replies' } }).populate({ path: 'comments', populate: { path: 'author' } })
+            ).populate("author").populate({ path: 'comments', populate: { path: 'replies' } }).populate({ path: 'comments', populate: { path: 'author' } }).populate('group')
 
         }
 

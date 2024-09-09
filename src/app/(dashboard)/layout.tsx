@@ -24,20 +24,22 @@ export default function RootLayout({
 }>) {
   // const [activeLeftSidebar, setActiveLeftSidebar] = useState(true);
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      className="p-0 m-0 box-border max-h-screen max-w-full overflow-hidden "
+    >
       <head></head>
-      <body className={` ${poppins.className} w-full bg-backgroundColor `}>
+      <body
+        className={` ${poppins.className} w-full h-full bg-backgroundColor `}
+      >
         <AuthProvider>
-          <header className="relative h-28 lg:h-16  ">
-            <Suspense fallback={<p>Loading feed...</p>}>
-              <Navbar
-              // active={activeLeftSidebar}
-              // setActive={setActiveLeftSidebar}
-              />
-            </Suspense>
+          <header className="relative h-28 lg:h-16 ">
+            {" "}
+            <Navbar />{" "}
           </header>
-          <main className="px-4 w-full flex items-start h-[calc(100vh-136px)] xl:h-[calc(100vh-88px)] relative ">
+          <main className="px-4 w-full flex-1 flex items-start  relative  ">
             <LeftSidebar />
+            {/* <div className="w-full sm:w-1/2 lg:w-1/4 absolute lg:relative "></div> */}
             <div className="w-full lg:w-3/4 xl:w-2/4  h-[calc(100vh-136px)] xl:h-[calc(100vh-88px)]  ">
               <ToastContainer
                 position="bottom-left"
@@ -58,9 +60,9 @@ export default function RootLayout({
               <RightSidebar />
             </div>
           </main>
-          <footer className="h-2 ">
-            {/* <p>Copyright clam @ {Date()}</p> */}
-          </footer>
+          {/* <footer className="h-2 ">
+            <p>Copyright clam @ {Date()}</p>
+          </footer> */}
         </AuthProvider>
       </body>
     </html>

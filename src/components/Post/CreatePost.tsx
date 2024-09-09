@@ -22,8 +22,9 @@ import { useRouter } from "next/navigation";
 import useLoaderStore from "../../../store/loaderStore";
 import { RotatingLines } from "react-loader-spinner";
 import useUserStore from "../../../store/userStore";
+import { IGroup } from "@/types";
 
-const CreatePost = () => {
+const CreatePost = ({ group }: { group?: IGroup }) => {
   // const [loading, setLoading] = useState(false);
   const { loader, setText, setLoader, text } = useLoaderStore();
   const [posting, setPosting] = useState(false);
@@ -122,30 +123,44 @@ const CreatePost = () => {
     setPosting(true);
     setLoader(true);
     setText("Posting");
+
     try {
       if (createPost.imageError) {
         return;
       }
-      const formData = new FormData();
 
-      formData.append("sample_file", createPost.media);
+      let secure_url = null;
+      let width = null;
+      let height = null;
 
-      const { data: m_data } = await axios("api/upload", {
-        method: "POST",
-        data: formData,
-      });
-      const { width, height, secure_url } = m_data;
+      // Check if createPost.media exists before making the upload request
+      if (createPost.media) {
+        const formData = new FormData();
+        formData.append("sample_file", createPost.media);
 
-      const response = await axios("api/posts/createPost", {
+        // Upload the media file
+        const { data: m_data } = await axios("api/upload", {
+          method: "POST",
+          data: formData,
+        });
+
+        // Extract width, height, and secure_url from the upload response
+        ({ width, height, secure_url } = m_data);
+      }
+
+      // Proceed with the createPost API call
+      const response = await axios("/api/posts/createPost", {
         method: "POST",
         data: {
           content: createPost.content,
           mediaType: createPost.mediaType,
-          media: secure_url,
-          height,
+          media: secure_url, // secure_url will be null if no media is uploaded
+          height, // height and width will be null if no media is uploaded
           width,
+          groupId: group?._id,
         },
       });
+
       const { data } = response;
       toast(
         <CustomToastWithLink

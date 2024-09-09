@@ -32,10 +32,19 @@ const LeftSidebar = () => {
         <LeftSidebarSkelton />
       ) : (
         <div
-          className={`w-1/2 lg:w-1/4 h-full p-4 left-0 -top-2 -bottom-0 z-[2000] lg:block  absolute lg:relative bg-backgroundColor lg:bg-transparent ${
-            !sidebar && "hidden"
+          className={`w-full sm:w-1/2 lg:w-1/4 p-4 left-0 -top-2 lg:top-0 h-[115%] -bottom-0 z-[2000] lg:block absolute bg-backgroundColor lg:relative lg:bg-transparent transition-all ease-in-out duration-300 transform ${
+            sidebar
+              ? "translate-x-0 opacity-100 "
+              : "-translate-x-full opacity-0 lg:translate-x-0 lg:opacity-100"
           } `}
         >
+          {/* <div
+          className={`w-full sm:w-1/2 lg:w-1/4 h-full p-4 left-0  z-[2000] lg:block absolute lg:relative bg-backgroundColor lg:bg-transparent transition-all ease-in-out duration-300 transform ${
+            sidebar
+              ? "translate-x-0 opacity-100"
+              : "-translate-x-full opacity-0"
+          }`}
+        > */}
           <div className="w-full my-2  ">
             <Link
               href={`/user/${user?._id}`}

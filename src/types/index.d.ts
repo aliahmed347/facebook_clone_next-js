@@ -30,6 +30,7 @@ export interface IPost {
   author: IUser;
   likes: string[];
   comments: IComment[];
+  group?: IGroup;
   shares: number;
   isDeleted: boolean;
   createdAt: string;
@@ -46,4 +47,17 @@ export interface IComment {
   likes: string[];
   createdAt: Date;
   updatedAt: Date;
+}
+export interface IGroup {
+  _id: string;
+  name: string;
+  description: string;
+  avatar: string;
+  banner: string;
+  admin: IUser;
+  members: IUser[];
+  posts: IPost;
+  createdAt: Date;
+  updatedAt: Date;
+  isDeleted: boolean;
 }

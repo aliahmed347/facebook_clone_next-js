@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema(
     },
     banner: {
       type: String,
-      default: "",
+      default: null,
     },
     receiveRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     sentRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],

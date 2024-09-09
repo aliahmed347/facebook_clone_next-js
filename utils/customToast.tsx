@@ -14,7 +14,7 @@ export const CustomToastWithLink = ({
       <p>{message}</p>
       <Link
         href={linkUrl}
-        target="_blank"
+        // target="_blank"
         rel="noopener noreferrer"
         className="text-green-700"
       >

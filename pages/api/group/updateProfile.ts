@@ -1,8 +1,9 @@
 import { StatusCodes } from "http-status-codes";
 import { NextApiRequest, NextApiResponse } from "next";
 import getServerSession from "../../../utils/getServerSession";
-import POST from "@/models/Post";
-import { authOptions } from "../auth/[...nextauth]";
+import USER from "../../../src/models/User";
+import GROUP from "@/models/Group";
+
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method !== "POST") {
@@ -14,26 +15,30 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
         const user: any = await getServerSession(req, res);
 
+
         if (!user) {
             return res.status(StatusCodes.UNAUTHORIZED).json({ error: "Unauthorized" });
         }
 
-        const { postId } = req.body;
+        const { banner, avatar, description, name, DOB, gender, groupId } = req.body;
 
-        const DBPost: any = await POST.findOne({ _id: postId, isDeleted: false });
+        const updateFields = {} as any;
 
-        if (!DBPost.likes.includes(user._id)) {
-            return res.status(StatusCodes.BAD_REQUEST).json({ error: 'You have not liked this post' });
-        }
+        if (avatar) updateFields.avatar = avatar;
+        if (banner) updateFields.banner = banner;
+        if (name) updateFields.name = name;
+        if (description) updateFields.description = description;
+        if (DOB) updateFields.DOB = DOB;
+        if (gender) updateFields.gender = gender;
 
-        const post = await POST.findByIdAndUpdate(
-            { _id: postId },
-            { $pull: { likes: user._id } },
+        const dbGroup = await GROUP.findByIdAndUpdate(
+            groupId, // Directly use the user ID
+            updateFields,
             { new: true }
-        ).populate("author").populate({ path: 'comments', populate: { path: 'replies' } }).populate({ path: 'comments', populate: { path: 'author' } }).populate('group')
+        ).populate('members').populate('posts').populate('admin')
 
 
-        return res.status(StatusCodes.OK).json({ post });
+        return res.status(StatusCodes.OK).json({ group: dbGroup });
     } catch (error) {
         console.log("🚀 ~ handler ~ error:", error);
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
