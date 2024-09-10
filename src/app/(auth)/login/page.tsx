@@ -19,7 +19,7 @@ const Login = () => {
   // const [loader, setLoader] = useState({ open: false, text: "" });
   const { setText, setLoader, text, loader } = useLoaderStore();
 
-  const { data, status } = useSession();
+  const { status } = useSession();
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -29,7 +29,7 @@ const Login = () => {
       setLoading(false);
       return router.push("/");
     }
-  }, [status, data]);
+  }, [status]);
 
   const validationSchema = yup.object({
     email: yup

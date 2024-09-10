@@ -35,7 +35,7 @@ const Register = () => {
 
   const router = useRouter();
 
-  const { data, status } = useSession();
+  const { status } = useSession();
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -45,7 +45,7 @@ const Register = () => {
       setLoading(false);
       return router.push("/");
     }
-  }, [status, data]);
+  }, [status]);
   useEffect(() => {
     return () => {
       if (timerId) {

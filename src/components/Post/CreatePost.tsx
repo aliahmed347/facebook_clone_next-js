@@ -32,13 +32,13 @@ const CreatePost = ({ group }: { group?: IGroup }) => {
 
   const { user } = useUserStore();
 
-  const { data, status } = useSession();
+  const { status } = useSession();
 
   useEffect(() => {
     if (status === "unauthenticated") {
       return router.push("/login");
     }
-  }, [data, status]);
+  }, [status]);
 
   const [createPost, setCreatePost] = useState({
     isOpen: false,

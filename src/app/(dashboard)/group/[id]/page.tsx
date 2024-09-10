@@ -11,9 +11,11 @@ import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import useUserStore from "../../../../../store/userStore";
 
-const group = ({ params }: { params: { id: string } }) => {
-  const { data, status }: any = useSession();
+const page = ({ params }: { params: { id: string } }) => {
+  const { status }: any = useSession();
+  const { user } = useUserStore();
   const [group, setGroup] = useState<IGroup>();
   const [posts, setPosts] = useState<IPost[]>();
   const [Loading, setLoading] = useState<Boolean>(true);
@@ -23,14 +25,15 @@ const group = ({ params }: { params: { id: string } }) => {
     if (status === "unauthenticated") {
       return router.push("/login");
     }
-    if (data?.user) {
-      // setUser(data?.user);
-    }
-  }, [data, status]);
+  }, [status]);
 
   useEffect(() => {
     getGroup();
   }, [params.id]);
+
+  useEffect(() => {
+    setPosts(group?.posts);
+  }, [group]);
 
   const getGroup = async () => {
     if (!params.id) return;
@@ -46,35 +49,6 @@ const group = ({ params }: { params: { id: string } }) => {
     }
   };
 
-  //   const handelFollow = async () => {
-  //     try {
-  //       const res = await axios("/api/friend/sendReq", {
-  //         method: "POST",
-  //         data: {
-  //           senderId: data.user?._id,
-  //           userId: user?._id,
-  //         },
-  //       });
-  //       setGroup(res.data.group);
-  //     } catch (error) {
-  //       console.log("🚀 ~ handelFollow ~ error:", error);
-  //     }
-  //   };
-  //   const handelUnFollow = async () => {
-  //     try {
-  //       const res = await axios("/api/friend/removeReq", {
-  //         method: "POST",
-  //         data: {
-  //           senderId: data.user?._id,
-  //           userId: user?._id,
-  //         },
-  //       });
-  //       setUser(res.data.user);
-  //     } catch (error) {
-  //       console.log("🚀 ~ handelFollow ~ error:", error);
-  //     }
-  //   };
-
   return (
     <>
       <section className="w-full flex justify-center items-center py-3 ">
@@ -82,24 +56,31 @@ const group = ({ params }: { params: { id: string } }) => {
           {Loading ? (
             <>
               <UserProfileSkelton />
-              {data?.user._id === params.id && <CreatePostSkelton />}
+              {user._id === params.id && <CreatePostSkelton />}
               <PostListSkelton />
             </>
           ) : (
             <>
               {group && (
-                <GroupProfile
-                  group={group}
-                  setGroup={setGroup}
-                  //   handelFollow={handelFollow}
-                  //   handelUnFollow={handelUnFollow}
-                />
+                <>
+                  <GroupProfile group={group} setGroup={setGroup} />
+                  {group.admin._id == user._id ? (
+                    <>
+                      <CreatePost group={group} />
+                      {posts && <PostsList posts={posts} />}
+                    </>
+                  ) : (
+                    <>
+                      {group.members.some((m) => m._id === user._id) && (
+                        <>
+                          <CreatePost group={group} />
+                          {posts && <PostsList posts={posts} />}
+                        </>
+                      )}
+                    </>
+                  )}
+                </>
               )}
-              {group?.admin._id === data?.user._id ||
-                (group?.members.some((m) => m._id === data?.user._id) && (
-                  <CreatePost group={group} />
-                ))}
-              {group?.posts && <PostsList posts={group.posts} />}
             </>
           )}
         </div>
@@ -108,4 +89,4 @@ const group = ({ params }: { params: { id: string } }) => {
   );
 };
 
-export default group;
+export default page;

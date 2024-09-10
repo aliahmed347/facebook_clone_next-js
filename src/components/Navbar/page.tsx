@@ -20,7 +20,6 @@ import useUserStore from "../../../store/userStore";
 const Navbar = () => {
   const pathname = usePathname();
   const { sidebar, setSidebar } = useLoaderStore();
-  const { data }: any = useSession();
   const [profile, setProfile] = useState(false);
   const { user, loadUser } = useUserStore();
 
@@ -50,7 +49,7 @@ const Navbar = () => {
               height={40}
             />
             <div className="flex gap-1">
-              <div className="bg-backgroundColor p-2 rounded-[20px]  justify-center items-center flex  ">
+              <div className="bg-backgroundColor p-2 rounded-lg  justify-center items-center flex  ">
                 <input
                   type="text"
                   name="search"
@@ -67,7 +66,7 @@ const Navbar = () => {
                 placement="bottom"
                 className="bg-primaryText bg-opacity-60"
               >
-                <button className="rounded-full h-10 w-10 bg-backgroundColor  justify-center items-center flex lg:hidden">
+                <button className="rounded-full min-h-10 min-w-10 bg-backgroundColor  justify-center items-center flex lg:hidden">
                   <IconBell size={24} className="text-primaryText" />
                 </button>
               </Tooltip>
@@ -84,7 +83,7 @@ const Navbar = () => {
                     height={40}
                   />
                 </Link>
-                <div className="bg-backgroundColor p-2 rounded-[20px]  justify-center items-center hidden xl:flex ">
+                <div className="bg-backgroundColor p-2 rounded-lg  justify-center items-center hidden xl:flex ">
                   <input
                     type="text"
                     name="search"
@@ -161,7 +160,7 @@ const Navbar = () => {
                   <div className=" hidden lg:block absolute w-40 bg-white top-14 right-4 p-1 rounded-lg ">
                     <ul className="w-full h-full">
                       <Link
-                        href={`/user/${data.user._id}`}
+                        href={`/user/${user._id}`}
                         className="cursor-pointer hover:opacity-50 p-1 mt-1  "
                         onClick={() => setProfile(!profile)}
                       >

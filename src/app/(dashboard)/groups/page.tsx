@@ -10,14 +10,22 @@ import PostsList from "@/components/PostsList/page";
 import Link from "next/link";
 import { Button } from "@material-tailwind/react";
 import GroupPageSkelton from "@/components/Skeltons/GroupPage";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const page = () => {
   const [loading, setLoading] = useState(true);
   // const { groups } = useUserStore();
   const [groups, setGroups] = useState<IGroup[]>();
-  console.log("🚀 ~ page ~ groups:", groups);
   const [posts, setPosts] = useState<IPost[]>();
+  const { status } = useSession();
+  const router = useRouter();
 
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      return router.push("/login");
+    }
+  }, [status]);
   useEffect(() => {
     getGroups();
   }, []);

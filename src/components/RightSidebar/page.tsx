@@ -49,7 +49,7 @@ const RightSidebar = () => {
             <div className="p-1 bg-[#D1D5DB] rounded-full  ">
               <IconPlus size={18} />
             </div>
-            <h4 className="text-base font-medium  whitespace-nowrap">Create New Group</h4>
+            <h4 className="text-base font-medium  whitespace-nowrap">Create Group</h4>
           </div>
           <ul className="mt-2 mr-8">
             {groups &&

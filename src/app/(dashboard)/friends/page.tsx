@@ -10,9 +10,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-const Friends = () => {
-  const { data, status }: any = useSession();
-  const [user, setUser] = useState<IUser>();
+const page = () => {
+  const { status }: any = useSession();
   const [users, setUsers] = useState<{
     receiveRequests: IUser[];
     sentRequests: IUser[];
@@ -25,9 +24,7 @@ const Friends = () => {
     if (status === "unauthenticated") {
       return router.push("/login");
     }
-    if (data?.user) {
-    }
-  }, [data, status]);
+  }, [status]);
 
   useEffect(() => {
     getAllFriends();
@@ -113,18 +110,4 @@ const Friends = () => {
   );
 };
 
-export default Friends;
-{
-  /* <div className="w-full bg-white flex items-center">
-                      <div className="">
-                        <Image
-                          src="/asset/images/profile.png"
-                          alt="Image"
-                          width={40}
-                          height={40}
-                        />
-                      </div>
-                      <div className="">
- <h1>{user.firstName+" "+user.lastName }</> 
-                    </div> */
-}
+export default page;

@@ -1,7 +1,8 @@
 // "use client";
 import { IPost } from "@/types";
 import {
-  IconH1,
+  IconBookmark,
+  IconBookmarkFilled,
   IconHeart,
   IconHeartFilled,
   IconMessageCircle2,
@@ -21,6 +22,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { BiLike } from "react-icons/bi";
 import { RotatingLines } from "react-loader-spinner";
 import ReactPlayer from "react-player";
+import useUserStore from "../../../store/userStore";
 
 const Post = ({ myPost }: any) => {
   const [post, setPost] = useState<IPost>(myPost);
@@ -29,7 +31,7 @@ const Post = ({ myPost }: any) => {
   const [loadingLike, setLoadingLike] = useState(true);
   const [loadingComment, setLoadingComment] = useState(false);
   const { author } = post;
-  const { data }: any = useSession();
+  const { user }: any = useUserStore();
   const router = useRouter();
 
   const textareaRef: any = useRef(null);
@@ -59,7 +61,7 @@ const Post = ({ myPost }: any) => {
     setLoadingLike(true);
     try {
       const res = await axios(
-        post.likes.includes(data?.user?._id)
+        post.likes.includes(user?._id)
           ? "/api/posts/dislikePost"
           : "/api/posts/likePost",
         {
@@ -84,7 +86,7 @@ const Post = ({ myPost }: any) => {
           post: id,
           // commentId: "66689626e4976115f69c0d4e",
           content: comment,
-          author: data?.user?._id,
+          author: user?._id,
         },
       });
 
@@ -108,7 +110,7 @@ const Post = ({ myPost }: any) => {
         data: {
           post: id,
           commentId,
-          author: data?.user?._id,
+          author: user?._id,
         },
       });
 
@@ -122,11 +124,25 @@ const Post = ({ myPost }: any) => {
       console.log("🚀 ~ likePostHandler ~ error:", error);
     }
   };
+  const SavePostHandler = async () => {
+    try {
+      const res = await axios("/api/posts/savePost", {
+        method: "POST",
+        data: {
+          postId: post._id,
+          userId: user._id,
+        },
+      });
+      setPost(res.data.post);
+    } catch (error) {
+      console.log("🚀 ~ SavePostHandler ~ error:", error);
+    }
+  };
 
   return (
     <div className="w-full bg-white rounded-xl ">
-      <div className="flex justify-between w-full">
-        <div className="flex items-center gap-2 p-2 ">
+      <div className="flex justify-between items-center p-2 w-full">
+        <div className="flex items-center gap-2  ">
           {post.group ? (
             <div className="w-15 h-15">
               <Image
@@ -165,6 +181,21 @@ const Post = ({ myPost }: any) => {
               {formatDistanceToNowStrict(new Date(post.createdAt))}
             </p>
           </div>
+        </div>
+        <div className="">
+          {post.savedBy.includes(user._id) ? (
+            <IconBookmarkFilled
+              size={20}
+              className="cursor-pointer"
+              onClick={SavePostHandler}
+            />
+          ) : (
+            <IconBookmark
+              size={20}
+              className="cursor-pointer"
+              onClick={SavePostHandler}
+            />
+          )}
         </div>
       </div>
       <div
@@ -214,7 +245,7 @@ const Post = ({ myPost }: any) => {
       <div className="w-full p-2 flex justify-around text-secondaryText gap-1  ">
         <div
           className={`w-1/3 py-1 hover:bg-backgroundColor flex justify-center items-center gap-2 rounded-md cursor-pointer ${
-            post.likes.includes(data?.user?._id) && "text-primary"
+            post.likes.includes(user?._id) && "text-primary"
           }   `}
           onClick={() => likePostHandler(post._id)}
         >
@@ -226,10 +257,10 @@ const Post = ({ myPost }: any) => {
               animationDuration="1"
               ariaLabel="rotating-lines-loading"
               strokeColor={
-                post.likes.includes(data?.user?._id) ? "#0866FF" : " #d9d6f1"
+                post.likes.includes(user?._id) ? "#0866FF" : " #d9d6f1"
               }
             />
-          ) : post.likes.includes(data?.user?._id) ? (
+          ) : post.likes.includes(user?._id) ? (
             <IconThumbUpFilled />
           ) : (
             <IconThumbUp />
@@ -279,7 +310,7 @@ const Post = ({ myPost }: any) => {
                   </div>
                   <div className="w-full flex justify-end items-end  gap-4 ">
                     <div className="flex justify-center items-center gap-1">
-                      {comment?.likes?.includes(data?.user?._id) ? (
+                      {comment?.likes?.includes(user?._id) ? (
                         <IconHeartFilled
                           size={15}
                           className="cursor-pointer text-primary"
@@ -316,7 +347,7 @@ const Post = ({ myPost }: any) => {
           <div className="w-full p-2   ">
             <div className="w-full flex justify-between gap-2  ">
               <Image
-                src={data?.user?.avatar}
+                src={user?.avatar}
                 alt="user"
                 width={35}
                 height={35}

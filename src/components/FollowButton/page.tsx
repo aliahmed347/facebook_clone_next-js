@@ -7,6 +7,7 @@ import React, { useState } from "react";
 import { FaRegEdit, FaUser, FaUserMinus, FaUserPlus } from "react-icons/fa";
 import { RotatingLines } from "react-loader-spinner";
 import UpdateUser from "../UserProfile/UpdateUser";
+import useUserStore from "../../../store/userStore";
 
 const FollowButton = ({
   user,
@@ -17,10 +18,10 @@ const FollowButton = ({
   setUser?: (user: IUser) => void;
   refreshHandler?: () => void;
 }) => {
-  const { data }: any = useSession();
+  const { user: LUser } = useUserStore();
   const [loadFollow, setLoadFollow] = useState(false);
   const [userModal, setUserModal] = useState<{
-    open: boolean; 
+    open: boolean;
   }>({ open: false });
 
   const handleFollow = async () => {
@@ -29,7 +30,7 @@ const FollowButton = ({
       const res = await axios("/api/friend/sendReq", {
         method: "POST",
         data: {
-          senderId: data.user?._id,
+          senderId: LUser?._id,
           userId: user?._id,
         },
       });
@@ -47,7 +48,7 @@ const FollowButton = ({
       const res = await axios("/api/friend/removeReq", {
         method: "POST",
         data: {
-          senderId: data.user?._id,
+          senderId: LUser?._id,
           userId: user?._id,
         },
       });
@@ -66,7 +67,7 @@ const FollowButton = ({
       const res = await axios("/api/friend/acceptReq", {
         method: "POST",
         data: {
-          senderId: data.user?._id,
+          senderId: LUser?._id,
           userId: user?._id,
         },
       });
@@ -109,7 +110,7 @@ const FollowButton = ({
             loading
           </Button>
         </>
-      ) : user._id === data?.user?._id ? (
+      ) : user._id === LUser?._id ? (
         <Button
           className="bg-primary flex justify-center items-center gap-2"
           fullWidth
@@ -121,7 +122,7 @@ const FollowButton = ({
           <FaRegEdit className="" size={20} />
           Update
         </Button>
-      ) : user.receiveRequests.some((ele) => ele._id === data.user._id) ? (
+      ) : user.receiveRequests.some((ele) => ele._id === LUser._id) ? (
         <Button
           className="bg-primary flex justify-center items-center gap-2"
           fullWidth
@@ -133,7 +134,7 @@ const FollowButton = ({
           <FaUserMinus className="" size={20} />
           Requested
         </Button>
-      ) : user.sentRequests.some((ele) => ele._id === data.user._id) ? (
+      ) : user.sentRequests.some((ele) => ele._id === LUser._id) ? (
         <Button
           className="bg-primary flex justify-center items-center gap-2"
           fullWidth
@@ -145,7 +146,7 @@ const FollowButton = ({
           <FaUserPlus className="" size={20} />
           Accept Request
         </Button>
-      ) : user.friends.some((ele) => ele._id === data.user._id) ? (
+      ) : user.friends.some((ele) => ele._id === LUser._id) ? (
         <Button
           className="bg-primary flex justify-center items-center gap-2"
           fullWidth

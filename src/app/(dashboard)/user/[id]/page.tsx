@@ -10,9 +10,11 @@ import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import useUserStore from "../../../../../store/userStore";
 
-const user = ({ params }: { params: { id: string } }) => {
-  const { data, status }: any = useSession();
+const page = ({ params }: { params: { id: string } }) => {
+  const { status }: any = useSession();
+  const { user: LUser }: any = useUserStore();
   const [user, setUser] = useState<IUser>();
   const [posts, setPosts] = useState<IPost[]>();
   const [Loading, setLoading] = useState<Boolean>(true);
@@ -22,10 +24,7 @@ const user = ({ params }: { params: { id: string } }) => {
     if (status === "unauthenticated") {
       return router.push("/login");
     }
-    if (data?.user) {
-      // setUser(data?.user);
-    }
-  }, [data, status]);
+  }, [status]);
 
   useEffect(() => {
     getUser();
@@ -50,7 +49,7 @@ const user = ({ params }: { params: { id: string } }) => {
       const res = await axios("/api/friend/sendReq", {
         method: "POST",
         data: {
-          senderId: data.user?._id,
+          senderId: LUser?._id,
           userId: user?._id,
         },
       });
@@ -64,7 +63,7 @@ const user = ({ params }: { params: { id: string } }) => {
       const res = await axios("/api/friend/removeReq", {
         method: "POST",
         data: {
-          senderId: data.user?._id,
+          senderId: LUser?._id,
           userId: user?._id,
         },
       });
@@ -81,7 +80,7 @@ const user = ({ params }: { params: { id: string } }) => {
           {Loading ? (
             <>
               <UserProfileSkelton />
-              {data?.user._id === params.id && <CreatePostSkelton />}
+              {LUser._id === params.id && <CreatePostSkelton />}
               <PostListSkelton />
             </>
           ) : (
@@ -94,7 +93,7 @@ const user = ({ params }: { params: { id: string } }) => {
                   handelUnFollow={handelUnFollow}
                 />
               )}
-              {data?.user._id === params.id && <CreatePost />}
+              {LUser._id === params.id && <CreatePost />}
               {posts && <PostsList posts={posts} />}
             </>
           )}
@@ -104,4 +103,4 @@ const user = ({ params }: { params: { id: string } }) => {
   );
 };
 
-export default user;
+export default page;

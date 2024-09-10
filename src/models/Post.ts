@@ -31,6 +31,7 @@ const PostSchema = new mongoose.Schema(
     },
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
+    savedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     shares: {
       type: Number,
     },

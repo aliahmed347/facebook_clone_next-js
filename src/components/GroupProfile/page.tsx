@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import { RotatingLines } from "react-loader-spinner";
 import JoinButton from "../JoinButton/page";
 import UpdateImage from "./UpdateImage";
+import useUserStore from "../../../store/userStore";
 
 const GroupProfile = ({
   group,
@@ -16,7 +17,7 @@ const GroupProfile = ({
   // handelUnFollow: () => void;
   setGroup: (u: IGroup) => void;
 }) => {
-  const { data }: any = useSession();
+  const { user }: any = useUserStore();
   const [imageModal, setImageModal] = useState<{
     open: boolean;
     name: "profile" | "cover" | "";
@@ -50,7 +51,7 @@ const GroupProfile = ({
               alt={group.name}
               className="w-24 h-24 rounded-full  border-4 border-white bg-gradient-to-tr to-[#D1D5DB] from-blue-gray-500"
             />
-            {group?.admin?._id === data?.user?._id && (
+            {group?.admin?._id === user?._id && (
               <button className="absolute right-1 bottom-1 bg-white rounded-full p-2 shadow-md translate-x-1/4 translate-y-1/4">
                 <FaCamera
                   className="text-gray-500"
@@ -59,7 +60,7 @@ const GroupProfile = ({
               </button>
             )}
           </div>
-          {group?.admin?._id === data?.user?._id && (
+          {group?.admin?._id === user?._id && (
             <button className="absolute right-2 bottom-2 bg-white rounded-full p-2 shadow-md">
               <FaCamera
                 className="text-gray-500"

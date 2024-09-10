@@ -7,20 +7,14 @@ import { useRouter } from "next/navigation";
 import { IPost } from "@/types";
 
 const PostsList = ({ posts }: { posts: IPost[] }) => {
-  const [Posts, setPosts] = useState([]);
-
-  const [user, setUser] = useState<any>({});
   const router = useRouter();
 
-  const { data, status } = useSession();
+  const { status } = useSession();
   useEffect(() => {
     if (status === "unauthenticated") {
       return router.push("/login");
     }
-    if (data?.user) {
-      setUser(data?.user);
-    }
-  }, [data, status]);
+  }, [status]);
   return (
     <div className="w-full  mt-3 flex justify-center items-center gap-3 flex-col  ">
       {posts.map((post: any, index) => (

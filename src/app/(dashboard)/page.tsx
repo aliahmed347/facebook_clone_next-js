@@ -14,7 +14,7 @@ const Page = () => {
   const router = useRouter();
   const [loadingPosts, setLoadingPosts] = useState(true);
   const [posts, setPosts] = useState<IPost[]>();
-  const { data, status } = useSession();
+  const { status } = useSession();
   const { setUser, user, setLoadUser, loadUser } = useUserStore();
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const Page = () => {
     }
     if (status === "authenticated") {
     }
-  }, [status, data]);
+  }, [status]);
 
   const getAllPosts = async () => {
     try {

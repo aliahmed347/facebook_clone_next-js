@@ -28,6 +28,7 @@ export interface IPost {
   height: number;
   mediaType: "video" | 'image' | 'text';
   author: IUser;
+  savedBy: string[];
   likes: string[];
   comments: IComment[];
   group?: IGroup;

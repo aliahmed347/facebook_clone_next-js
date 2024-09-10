@@ -11,7 +11,7 @@ import Link from "next/link";
 import useUserStore from "../../../store/userStore";
 
 const LeftSidebar = () => {
-  const { data, status }: any = useSession();
+  const { status }: any = useSession();
   const { sidebar, setSidebar } = useLoaderStore();
   const router = useRouter();
   const [loading, setLoading] = useState<Boolean>(true);
@@ -22,10 +22,10 @@ const LeftSidebar = () => {
       setLoading(false);
       return router.push("/login");
     }
-    if (data?.user) {
+    if (status === "authenticated") {
       setLoading(false);
     }
-  }, [data, status]);
+  }, [status]);
   return (
     <>
       {loading || loadUser ? (
@@ -44,7 +44,13 @@ const LeftSidebar = () => {
               className="flex justify-start items-center gap-3 cursor-pointer"
             >
               {user?.avatar && (
-                <Image src={user?.avatar} alt="user" width={35} height={35} className="rounded-full" />
+                <Image
+                  src={user?.avatar}
+                  alt="user"
+                  width={35}
+                  height={35}
+                  className="rounded-full"
+                />
               )}
               <h4 className="text-base font-semibold whitespace-nowrap">
                 {user?.firstName + " " + user?.lastName}
