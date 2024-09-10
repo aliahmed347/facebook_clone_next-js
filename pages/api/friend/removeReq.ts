@@ -21,9 +21,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
         const { senderId, userId } = req.body;
 
-        // Remove the `userId` from the arrays of the document with `_id` equal to `userId`
-        await USER.findByIdAndUpdate(
-            userId, // Pass the ID directly
+        const dbUser = await USER.findByIdAndUpdate(
+            userId,
             {
                 $pull: {
                     friends: senderId,
@@ -31,16 +30,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                     sentRequests: senderId,
                 }
             },
-            { new: true } // Return the updated document
+            { new: true }
         )
             .select('-password')
             .populate('friends')
             .populate('receiveRequests')
             .populate('sentRequests');
 
-        // Remove the `senderId` from the arrays of the document with `_id` equal to `senderId`
-        const dbUser = await USER.findByIdAndUpdate(
-            senderId, // Pass the ID directly
+        await USER.findByIdAndUpdate(
+            senderId,
             {
                 $pull: {
                     friends: userId,
