@@ -17,10 +17,12 @@ import axios from "axios";
 import { IUser } from "@/types";
 import NavbarSkelton from "@/components/Skeltons/Navbar";
 import useUserStore from "../../../store/userStore";
+import Notifications from "../Notification/page";
 const Navbar = () => {
   const pathname = usePathname();
   const { sidebar, setSidebar } = useLoaderStore();
   const [profile, setProfile] = useState(false);
+  const [notification, setNotification] = useState(false);
   const { user, loadUser } = useUserStore();
 
   const router = useRouter();
@@ -66,9 +68,24 @@ const Navbar = () => {
                 placement="bottom"
                 className="bg-primaryText bg-opacity-60"
               >
-                <button className="rounded-full min-h-10 min-w-10 bg-backgroundColor  justify-center items-center flex lg:hidden">
-                  <IconBell size={24} className="text-primaryText" />
-                </button>
+                <div className="relative">
+                  <div
+                  // href="/notification"
+                  >
+                    <button
+                      className="rounded-full min-h-10 min-w-10 bg-backgroundColor  justify-center items-center flex lg:hidden"
+                      onClick={() => {
+                        setProfile(false);
+                        setNotification(!notification);
+                      }}
+                    >
+                      <IconBell size={24} className="text-primaryText" />
+                    </button>
+                  </div>
+                  {notification && (
+                    <Notifications className="block lg:hidden absolute w-72 sm:w-80 h-80 sm:h-96   bg-white  border border-gray-500 top-11 right-0 py-3  rounded-lg" />
+                  )}
+                </div>
               </Tooltip>
             </div>
           </div>
@@ -143,9 +160,24 @@ const Navbar = () => {
                 placement="bottom"
                 className="bg-primaryText bg-opacity-60"
               >
-                <button className="rounded-full h-10 w-10 bg-backgroundColor  justify-center items-center hidden lg:flex">
-                  <IconBell size={24} className="text-primaryText" />
-                </button>
+                <div className="relative">
+                  <div
+                  // href="/notification"
+                  >
+                    <button
+                      className="rounded-full h-10 w-10 bg-backgroundColor  justify-center items-center hidden lg:flex"
+                      onClick={() => {
+                        setProfile(false);
+                        setNotification(!notification);
+                      }}
+                    >
+                      <IconBell size={24} className="text-primaryText" />
+                    </button>
+                  </div>
+                  {notification && (
+                    <Notifications className="hidden lg:block absolute w-80 h-96  bg-white  border border-gray-500 lg:top-14 lg:-right-5 py-3  rounded-lg" />
+                  )}
+                </div>
               </Tooltip>
               <div className="relative">
                 <Image
@@ -154,23 +186,27 @@ const Navbar = () => {
                   width={35}
                   height={35}
                   className="cursor-pointer hidden lg:block rounded-full "
-                  onClick={() => setProfile(!profile)}
+                  onClick={() => {
+                    setNotification(false);
+                    setProfile(!profile);
+                  }}
                 />
                 {profile && (
-                  <div className=" hidden lg:block absolute w-40 bg-white top-14 right-4 p-1 rounded-lg ">
+                  <div className=" hidden lg:block absolute w-40 bg-white border border-gray-500  top-14 right-4 p-1 rounded-lg ">
                     <ul className="w-full h-full">
                       <Link
                         href={`/user/${user._id}`}
-                        className="cursor-pointer hover:opacity-50 p-1 mt-1  "
                         onClick={() => setProfile(!profile)}
                       >
-                        Profile
+                        <li className="cursor-pointer p-1 mt-1 hover:bg-[#E4E6E9] rounded-lg w-full">
+                          Profile
+                        </li>
                       </Link>
-                      <li className="cursor-pointer hover:opacity-50 p-1 mt-1 ">
+                      <li className="cursor-pointer p-1 mt-1 hover:bg-[#E4E6E9] rounded-lg w-full">
                         Settings
                       </li>
                       <li
-                        className="cursor-pointer hover:opacity-50 p-1 mt-1 "
+                        className="cursor-pointer p-1 mt-1 hover:bg-[#E4E6E9] rounded-lg w-full"
                         onClick={logOut}
                       >
                         Logout
@@ -185,7 +221,7 @@ const Navbar = () => {
                 className="bg-primaryText bg-opacity-60"
               >
                 <button
-                  className="rounded-full h-10 w-10 bg-backgroundColor  justify-center items-center flex lg:hidden"
+                  className="rounded-full h-10 w-10 sm:bg-backgroundColor  justify-center items-center flex lg:hidden"
                   onClick={() => setSidebar(!sidebar)}
                 >
                   <IconMenu2 size={24} className="text-primaryText" />

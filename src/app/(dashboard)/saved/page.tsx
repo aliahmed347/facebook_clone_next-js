@@ -1,14 +1,9 @@
 "use client";
-import FollowButton from "@/components/FollowButton/page";
-import FollowUserProfile from "@/components/FollowUserProfile/page";
 import PostsList from "@/components/PostsList/page";
-import FriendsSkelton from "@/components/Skeltons/Friends";
 import PostListSkelton from "@/components/Skeltons/PostListSkelton";
-import { IPost, IUser } from "@/types";
+import { IPost,  } from "@/types";
 import axios from "axios";
 import { useSession } from "next-auth/react";
-import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
