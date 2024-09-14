@@ -1,22 +1,51 @@
-import React from "react";
+import { INotification } from "@/types";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import RenderNotification from "./RenderNotification";
+import { RotatingLines } from "react-loader-spinner";
 
 const Notifications = ({ className }: { className: string }) => {
+  const [notifications, setNotifications] = useState<INotification[]>();
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const getAllNotifications = async () => {
+    try {
+      setLoading(true)
+      const { data } = await axios("/api/Notification/getNotifications", {
+        method: "GET",
+      });
+      setNotifications(data.notifications);
+    } catch (error) {
+      console.log("🚀 ~ getAllNotifications ~ error:", error);
+    }finally{
+      setLoading(false)
+
+    }
+  };
+  useEffect(() => {
+    getAllNotifications();
+  }, []);
+
   return (
-    <div
-      className={` ${className}`}
-    >
-      <ul className="w-full h-full px-3 overflow-y-scroll no-scrollbar">
-        {Array.from({ length: 5 }).map((_, index) => {
-          return (
-            <li className="w-full px-2 mt-2 py-1 border-b border-gray-500 rounded-lg bg-[#E4E6E9] ">
-              <h3 className="text-sm font-semibold">New Friend Request</h3>
-              <p className="text-sm">
-                Ali Ahmed sent you friend request please check
-              </p>
-            </li>
-          );
-        })}
-      </ul>
+    <div className={` ${className}`}>
+      <div className="w-full h-full px-3 overflow-y-scroll no-scrollbar">
+        {loading && (
+          <div className="w-full flex justify-center items-center">
+            <RotatingLines
+              visible={true}
+              width="20"
+              strokeWidth="3"
+              animationDuration="1"
+              ariaLabel="rotating-lines-loading"
+              strokeColor="#E4E6E9"
+            />
+          </div>
+        )}
+        {notifications &&
+          notifications.map((not: INotification, index) => {
+            return <RenderNotification key={index} {...not} />;
+          })}
+      </div>
     </div>
   );
 };

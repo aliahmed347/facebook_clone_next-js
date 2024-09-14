@@ -2,6 +2,8 @@ import { StatusCodes } from "http-status-codes";
 import { NextApiRequest, NextApiResponse } from "next";
 import getServerSession from "../../../utils/getServerSession";
 import GROUP from "@/models/Group";
+import NOTIFICATION from "@/models/Notification";
+import CreateNotification from "../../../lib/createNotification";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method !== "POST") {
@@ -42,6 +44,24 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 ]
             })
             .populate('admin');
+
+
+
+        await CreateNotification({
+            sender: `${user._id}`,
+            receiver: `${user._id}`,
+            status: 'YouJoinGroup',
+            group: `${groupId}`
+        })
+
+        await CreateNotification({
+            sender: `${user._id}`,
+            receiver: `${group?.admin?._id}`,
+            status: 'UserJoinGroup',
+            group: `${groupId}`
+        })
+
+
 
         return res.status(StatusCodes.OK).json({ group });
     } catch (error) {

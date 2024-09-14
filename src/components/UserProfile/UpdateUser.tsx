@@ -36,6 +36,7 @@ const UpdateUser = ({
   const validationSchema = yup.object({
     firstName: yup.string().required("First name is require"),
     lastName: yup.string().required("Last name is require"),
+    username: yup.string().required("Username is require"),
     email: yup
       .string()
       .email("Enter invalid email")
@@ -63,7 +64,7 @@ const UpdateUser = ({
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
-      // password: user.firstName,
+      username: user.username || "",
       gender: user.gender,
       DOB: formattedDOB,
       bio: user.bio,
@@ -80,8 +81,9 @@ const UpdateUser = ({
           setUser(response.data.user);
           closeModalHandler();
           toast("Profile Updated Successfully", { type: "success" });
-        } catch (error) {
+        } catch (error: any) {
           console.log("🚀 ~ updatedUser ~ error:", error);
+          toast(`${error?.response?.data?.error}`, { type: "error" });
         } finally {
           setUploading(false);
           resetForm();
@@ -100,6 +102,7 @@ const UpdateUser = ({
     setValues({
       firstName: user.firstName,
       lastName: user.lastName,
+      username: user.username || "",
       email: user.email,
       gender: user.gender,
       DOB: formattedDOB,
@@ -198,6 +201,21 @@ const UpdateUser = ({
                       onPointerLeaveCapture={undefined}
                       crossOrigin={undefined}
                       disabled={true}
+                    />
+                    <Input
+                      size="lg"
+                      name="username"
+                      placeholder="Jhon dou"
+                      className=""
+                      label="Username"
+                      labelProps={{
+                        className: "",
+                      }}
+                      onChange={handleChange}
+                      value={values.username}
+                      onPointerEnterCapture={undefined}
+                      onPointerLeaveCapture={undefined}
+                      crossOrigin={undefined}
                     />
 
                     <Input

@@ -2,7 +2,7 @@ import { StatusCodes } from "http-status-codes";
 import { NextApiRequest, NextApiResponse } from "next";
 import getServerSession from "../../../utils/getServerSession";
 import USER from "@/models/User";
-import POST from "@/models/Post";
+import CreateNotification from "../../../lib/createNotification";
 
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -20,6 +20,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         }
 
         const { senderId, userId } = req.body;
+        if (!senderId || !userId) {
+            return res.status(StatusCodes.OK).json({ user: null });
+
+        }
 
         await USER.findByIdAndUpdate(
             { _id: senderId },
@@ -34,6 +38,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             { $push: { receiveRequests: senderId, } },
             { new: true }
         ).select('-password').populate('friends').populate('receiveRequests').populate('sentRequests')
+
+        await CreateNotification({
+            sender: `${senderId}`,
+            receiver: `${userId}`,
+            status: 'ReceiveFriendRequest',
+        })
 
 
 

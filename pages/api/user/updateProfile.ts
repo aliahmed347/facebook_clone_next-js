@@ -2,6 +2,8 @@ import { StatusCodes } from "http-status-codes";
 import { NextApiRequest, NextApiResponse } from "next";
 import getServerSession from "../../../utils/getServerSession";
 import USER from "../../../src/models/User";
+import NOTIFICATION from "@/models/Notification";
+import CreateNotification from "../../../lib/createNotification";
 
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -19,7 +21,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             return res.status(StatusCodes.UNAUTHORIZED).json({ error: "Unauthorized" });
         }
 
-        const { banner, avatar, bio, firstName, lastName, DOB, gender } = req.body;
+        const { banner, avatar, bio, email, firstName, lastName, username, DOB, gender } = req.body;
 
         const updateFields = {} as any;
 
@@ -28,8 +30,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         if (bio) updateFields.bio = bio;
         if (firstName) updateFields.firstName = firstName;
         if (lastName) updateFields.lastName = lastName;
+        if (username) updateFields.username = username;
         if (DOB) updateFields.DOB = DOB;
         if (gender) updateFields.gender = gender;
+
+        const cUser = await USER.findOne({ username, email: { $ne: email } });
+
+        if (cUser) {
+            return res
+                .status(StatusCodes.BAD_REQUEST)
+                .json({ error: "This username or email is already register with us" });
+        }
+
 
         const dbUser = await USER.findByIdAndUpdate(
             user._id, // Directly use the user ID
@@ -41,6 +53,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             .populate('receiveRequests')
             .populate('sentRequests');
 
+        await CreateNotification({
+            sender: `${user._id}`,
+            receiver: `${user._id}`,
+            status: 'UpdateYourProfile',
+        })
 
 
         return res.status(StatusCodes.OK).json({ user: dbUser });

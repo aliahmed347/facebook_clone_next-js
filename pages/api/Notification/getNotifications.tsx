@@ -1,13 +1,10 @@
 import { StatusCodes } from "http-status-codes";
 import { NextApiRequest, NextApiResponse } from "next";
-import getServerSession from "../../../utils/getServerSession";
-import GROUP from "@/models/Group";
 import NOTIFICATION from "@/models/Notification";
-import USER from "@/models/User";
-import CreateNotification from "../../../lib/createNotification";
+import getServerSession from "../../../utils/getServerSession";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  if (req.method !== "POST") {
+  if (req.method !== "GET") {
     return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({
       error: "Method not allowed",
     });
@@ -22,26 +19,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         .json({ error: "Unauthorized" });
     }
 
-    const { name, description } = req.body;
-
-    const group = await GROUP.create({
-      name,
-      description,
-      admin: user._id,
-    });
-
-    const dbUser = await USER.findOne({ _id: user._id }).populate('friends')
-
-    dbUser?.friends.map(async (u) => {
-      await CreateNotification({
-        sender: `${user._id}`,
-        receiver: `${u._id}`,
-        status: 'YourFriendCreateGroup',
-        group: `${group._id}`
-      })
+    const notifications = await NOTIFICATION.find({
+      receiver: user._id,
     })
-
-    return res.status(StatusCodes.OK).json({ group });
+      .populate("receiver")
+      .populate("sender")
+      .populate("group")
+      .sort({ createdAt: -1 });
+    return res.status(StatusCodes.OK).json({ notifications });
   } catch (error) {
     console.log("🚀 ~ handler ~ error:", error);
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({

@@ -3,6 +3,8 @@ import { NextApiRequest, NextApiResponse } from "next";
 import getServerSession from "../../../utils/getServerSession";
 import USER from "@/models/User";
 import POST from "@/models/Post";
+import NOTIFICATION from "@/models/Notification";
+import CreateNotification from "../../../lib/createNotification";
 
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -56,6 +58,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             .populate('sentRequests');
 
 
+        await CreateNotification({
+            sender: `${senderId}`,
+            receiver: `${userId}`,
+            status: 'AcceptFriendRequest',
+        })
 
 
         return res.status(StatusCodes.OK).json({ user: dbUser });

@@ -4,6 +4,7 @@ export interface IUser {
   _id: string;
   firstName: string;
   lastName: string;
+  username: string;
   email: string;
   DOB: string;
   bio: string;
@@ -61,4 +62,14 @@ export interface IGroup {
   createdAt: Date;
   updatedAt: Date;
   isDeleted: boolean;
+}
+
+export interface INotification {
+  _id: string
+  sender: IUser
+  receiver: IUser
+  status: 'ReceiveFriendRequest' | 'AcceptFriendRequest' | 'YourFriendCreateGroup' | 'UpdateYourProfile' | 'UserJoinGroup' | 'YouJoinGroup' | 'YourFriendCreatePost' | 'GroupUserCreatePost' | 'WelComeNewUser'
+  group?: IGroup
+  createdAt: Date;
+  updatedAt: Date;
 }

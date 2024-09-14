@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import { NextApiRequest, NextApiResponse } from "next";
 import { connectDB } from "@/../utils/mongodb";
 import USER from "../../../../src/models/User";
+import CreateNotification from "../../../../lib/createNotification";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== "POST") {
@@ -30,7 +31,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     // return;
     const hash = await bcrypt.hash(password, 12);
 
-    const user = await USER.create({
+
+    const newUser = await USER.create({
       firstName,
       lastName,
       email,
@@ -39,7 +41,23 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       gender,
     });
 
-    res.status(StatusCodes.OK).json({ user });
+    const username = `${firstName}_${lastName}_${newUser._id.toString().slice(-5, -1)}`;
+
+
+    const user = await USER.findOneAndUpdate({
+      _id: newUser._id
+    }, {
+      username
+    }, {
+      new: true
+    });
+
+    await CreateNotification({
+      sender: `${user?._id}`,
+      receiver: `${user?._id}`,
+      status: 'WelComeNewUser',
+    })
+    return res.status(StatusCodes.OK).json({ user });
   } catch (error) {
     console.log("🚀 ~ handler ~ error:", error);
     return res.status(StatusCodes.BAD_REQUEST).json({

@@ -7,6 +7,9 @@ import fs from "fs";
 import MiddlewareRunner from "../../../utils/middlewareRunner";
 import { authOptions } from "../auth/[...nextauth]";
 import GROUP from "@/models/Group";
+import USER from "@/models/User";
+import NOTIFICATION from "@/models/Notification";
+import CreateNotification from "../../../lib/createNotification";
 interface MulterRequest extends NextApiRequest {
   file: Express.Multer.File;
 }
@@ -79,11 +82,32 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     })).populate("author")).populate({ path: 'comments', populate: { path: 'replies' } })).populate({ path: 'comments', populate: { path: 'author' } })).populate('group');
 
 
-    groupId &&
+    const group = groupId &&
       (await GROUP.findByIdAndUpdate(
         { _id: groupId },
         { $push: { posts: post._id } }
-      ));
+      ).populate('members'))
+
+
+    const dbUser = await USER.findOne({ _id: user._id }).populate('friends')
+
+    !groupId && dbUser?.friends.map(async (u) => {
+      await CreateNotification({
+        sender: `${user._id}`,
+        receiver: `${u._id}`,
+        status: 'YourFriendCreatePost',
+      })
+    })
+
+    groupId && group?.members.map(async (u: { _id: any; }) => {
+      await CreateNotification({
+        sender: `${user._id}`,
+        receiver: `${u._id}`,
+        status: 'GroupUserCreatePost',
+        group: `${groupId}`
+      })
+    })
+
 
     return res.status(StatusCodes.OK).json({ post });
   } catch (error) {
