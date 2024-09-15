@@ -36,10 +36,10 @@ export default function RootLayout({
             {" "}
             <Navbar />{" "}
           </header>
-          <main className="px-4 w-full flex-1 flex items-start  relative  ">
+          <main className="px-4 w-full flex-1 flex items-start  relative">
             <LeftSidebar />
             {/* <div className="w-full sm:w-1/2 lg:w-1/4 absolute lg:relative "></div> */}
-            <div className="w-full md:w-3/4 xl:w-2/4  mr-0 md:mr-3 lg:mr-0  h-[calc(100vh-136px)] xl:h-[calc(100vh-88px)]  ">
+            <div className="w-full md:w-3/4 xl:w-2/4  mr-0 md:mr-3 lg:mr-0  h-[calc(100vh-136px)] xl:h-[calc(100vh-88px)] overflow-y-auto  no-scrollbar py-3">
               <ToastContainer
                 position="bottom-left"
                 autoClose={5000}

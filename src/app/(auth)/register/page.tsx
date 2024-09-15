@@ -94,7 +94,7 @@ const Register = () => {
       console.log("Submitting OTP:", otp);
       try {
         await axios({
-          url: "api/email/verifyRegistrationOTP",
+          url: "/api/email/verifyRegistrationOTP",
           method: "POST",
           data: {
             email: values.email,
@@ -166,7 +166,7 @@ const Register = () => {
       setLoader(true);
       setText("Creating account...");
       const user = await axios({
-        url: "api/auth/register/createAccount",
+        url: "/api/auth/register/createAccount",
         method: "POST",
         data: values,
       });
@@ -186,7 +186,7 @@ const Register = () => {
       setLoader(true);
       setText("Requesting OTP...");
       const OTP: any = await axios({
-        url: "api/email/sendRegistrationOTP",
+        url: "/api/email/sendRegistrationOTP",
         method: "POST",
         data: { email: values.email },
       });

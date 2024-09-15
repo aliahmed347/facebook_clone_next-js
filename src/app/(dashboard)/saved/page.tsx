@@ -1,7 +1,7 @@
 "use client";
 import PostsList from "@/components/PostsList/page";
 import PostListSkelton from "@/components/Skeltons/PostListSkelton";
-import { IPost,  } from "@/types";
+import { IPost } from "@/types";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -39,8 +39,12 @@ const page = () => {
 
   return (
     <>
-      <section className="w-full flex justify-center items-center py-3 ">
-        <div className="w-full lg:w-3/4 h-[calc(100vh-136px)] xl:h-[calc(100vh-88px)] overflow-y-auto  no-scrollbar ">
+      <section
+        className={`w-full ${
+          posts && posts?.length !== 0 && "h-full"
+        } flex justify-center items-center `}
+      >
+        <div className="w-full lg:w-3/4 ">
           {loading ? (
             <>
               <div className="w-full">

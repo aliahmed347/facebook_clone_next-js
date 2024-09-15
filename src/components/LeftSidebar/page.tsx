@@ -45,13 +45,13 @@ const LeftSidebar = () => {
         <LeftSidebarSkelton />
       ) : (
         <div
-          className={`w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-4 left-0 -top-2 lg:top-0 min-h-[110%] lg:max-h-[calc(100vh-70px)] -bottom-0 z-[2000] lg:block absolute bg-backgroundColor lg:relative lg:bg-transparent transition-all ease-in-out duration-300 transform overflow-y-auto no-scrollbar  ${
+          className={`w-full sm:w-1/2 md:w-1/3 lg:w-1/4 pb-5 left-0 -top-4 lg:top-0 min-h-[calc(100vh-136px)] xl:max-h-[calc(100vh-88px)]  -bottom-0 z-[2000] lg:block absolute bg-backgroundColor lg:relative lg:bg-transparent transition-all ease-in-out duration-300 transform overflow-y-auto no-scrollbar  ${
             sidebar
               ? "translate-x-0 opacity-100 "
               : "-translate-x-full opacity-0 lg:translate-x-0 lg:opacity-100"
           } `}
         >
-          <div className="w-full min-h-full pb-5 my-2 flex flex-col justify-between ">
+          <div className="w-full h-full flex flex-col p-4 justify-between ">
             <div className="">
               <Link
                 href={`/user/${user?._id}`}
@@ -117,7 +117,7 @@ const LeftSidebar = () => {
             </div>
 
             <div
-              className="rounded-lg bg-[#E4E6E9]  p-2 lg:hidden flex items-center gap-1 cursor-pointer relative"
+              className="rounded-lg bg-[#E4E6E9]  p-2  lg:hidden flex items-center gap-1 cursor-pointer relative"
               onClick={logOut}
             >
               <IconLogout />

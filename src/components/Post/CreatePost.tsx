@@ -139,7 +139,7 @@ const CreatePost = ({ group }: { group?: IGroup }) => {
         formData.append("sample_file", createPost.media);
 
         // Upload the media file
-        const { data: m_data } = await axios("api/upload", {
+        const { data: m_data } = await axios("/api/upload", {
           method: "POST",
           data: formData,
         });

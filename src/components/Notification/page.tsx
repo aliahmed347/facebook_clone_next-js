@@ -10,16 +10,15 @@ const Notifications = ({ className }: { className: string }) => {
 
   const getAllNotifications = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
       const { data } = await axios("/api/Notification/getNotifications", {
         method: "GET",
       });
       setNotifications(data.notifications);
     } catch (error) {
       console.log("🚀 ~ getAllNotifications ~ error:", error);
-    }finally{
-      setLoading(false)
-
+    } finally {
+      setLoading(false);
     }
   };
   useEffect(() => {
@@ -30,14 +29,14 @@ const Notifications = ({ className }: { className: string }) => {
     <div className={` ${className}`}>
       <div className="w-full h-full px-3 overflow-y-scroll no-scrollbar">
         {loading && (
-          <div className="w-full flex justify-center items-center">
+          <div className="w-full h-full flex justify-center items-center">
             <RotatingLines
               visible={true}
               width="20"
               strokeWidth="3"
               animationDuration="1"
               ariaLabel="rotating-lines-loading"
-              strokeColor="#E4E6E9"
+              strokeColor="#000"
             />
           </div>
         )}

@@ -1,10 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import useUserStore from "../../../../store/userStore";
-import FriendsSkelton from "@/components/Skeltons/Friends";
 import { IGroup, IPost } from "@/types";
 import Image from "next/image";
-import JoinButton from "@/components/JoinButton/page";
 import axios from "axios";
 import PostsList from "@/components/PostsList/page";
 import Link from "next/link";
@@ -53,11 +50,7 @@ const page = () => {
   };
 
   return (
-    <section
-      className={`w-full ${
-        groups?.length == 0 && "h-full"
-      } flex justify-center items-center `}
-    >
+    <section className="w-full h-full flex justify-center items-center ">
       <div className="w-full lg:w-3/4 ">
         {loading ? (
           <>

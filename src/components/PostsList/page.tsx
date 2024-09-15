@@ -16,7 +16,7 @@ const PostsList = ({ posts }: { posts: IPost[] }) => {
     }
   }, [status]);
   return (
-    <div className="w-full  mt-3 flex justify-center items-center gap-3 flex-col  ">
+    <div className="w-full   mt-3 flex justify-center items-center gap-3 flex-col  ">
       {posts.map((post: any, index) => (
         <Post key={index} myPost={post} />
       ))}

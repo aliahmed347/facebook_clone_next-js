@@ -42,8 +42,8 @@ const Navbar = () => {
       {loadUser ? (
         <NavbarSkelton />
       ) : (
-        <nav className="bg-white shadow-[0_4px_12px_rgba(0,0,0,0.1)] sticky z-[99] top-0 w-full py-2 px-4 ">
-          <div className="w-full  lg:hidden flex justify-between gap-1  ">
+        <nav className="bg-white shadow-[0_4px_12px_rgba(0,0,0,0.1)] sticky z-[99] top-0 w-full lg:py-2 px-4 ">
+          <div className="w-full pt-0.5 pb-0.5 lg:pt-0 lg:pb-0 lg:hidden flex justify-between gap-1  ">
             <Image
               src="/asset/images/logo.png"
               alt="logo"
@@ -89,7 +89,7 @@ const Navbar = () => {
               </Tooltip>
             </div>
           </div>
-          <div className="  flex justify-between items-center  ">
+          <div className="  flex pt-0.5 pb-0.5 lg:pt-0 lg:pb-0 justify-between items-center  ">
             <div className=" w-1/6 xl:w-1/4 hidden lg:block ">
               <div className="flex items-center gap-2 ">
                 <Link href="/" className=" ">
@@ -120,6 +120,11 @@ const Navbar = () => {
                   <li
                     key={index}
                     className="w-1/2 h-[3rem] flex justify-center items-center hover:bg-backgroundColor rounded-lg  "
+                    onClick={() => {
+                      setNotification(false);
+                      setSidebar(false);
+                      setProfile(false);
+                    }}
                   >
                     <Tooltip
                       content={item.title}

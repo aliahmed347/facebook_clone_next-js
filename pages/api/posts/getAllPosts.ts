@@ -3,6 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import getServerSession from "../../../utils/getServerSession";
 import POST from "@/models/Post";
 import { authOptions } from "../auth/[...nextauth]";
+import GROUP from "@/models/Group";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== "POST") {
@@ -15,8 +16,20 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (!user) {
       return res.status(StatusCodes.UNAUTHORIZED).json({ error: "Unauthorized" });
     }
-    const posts = await POST.find({})
-      .populate({ path: 'comments', populate: { path: 'replies' } }).populate({ path: 'comments', populate: { path: 'author' } }).populate("author").populate('group').sort({ createdAt: -1 });
+
+
+    const groups = await GROUP.find({ members: { $in: [user._id] } });
+
+    const groupIds = groups.map(group => group._id);
+
+    const posts = await POST.find({
+      author: { $ne: user._id },
+      $or: [
+        { group: { $in: groupIds } },
+        { group: null }
+      ]
+    }).populate({ path: 'comments', populate: { path: 'replies' } }).populate({ path: 'comments', populate: { path: 'author' } }).populate("author").populate('group').sort({ createdAt: -1 });
+
     return res.status(StatusCodes.OK).json({ posts });
   } catch (error) {
     console.log("🚀 ~ handler ~ error:", error);

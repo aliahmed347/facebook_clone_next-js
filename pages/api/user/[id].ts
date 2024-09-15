@@ -22,7 +22,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         const { id } = req.query;
 
         const dbUser: any = await USER.findById(id).select("-password").populate('friends').populate('receiveRequests').populate('sentRequests')
-        const dbPosts: any = await POST.find({ author: id }).populate({ path: 'comments', populate: { path: 'replies' } }).populate({ path: 'comments', populate: { path: 'author' } }).populate("author").sort({ createdAt: -1 });
+
+        const dbPosts: any = await POST.find({ author: id, group: null }).populate({ path: 'comments', populate: { path: 'replies' } }).populate({ path: 'comments', populate: { path: 'author' } }).populate("author").sort({ createdAt: -1 });
 
 
         return res.status(StatusCodes.OK).json({ user: dbUser, posts: dbPosts });
