@@ -36,7 +36,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
         const cUser = await USER.findOne({ username, email: { $ne: email } });
 
-        if (cUser) {
+        if (cUser && cUser.username) {
             return res
                 .status(StatusCodes.BAD_REQUEST)
                 .json({ error: "This username or email is already register with us" });
