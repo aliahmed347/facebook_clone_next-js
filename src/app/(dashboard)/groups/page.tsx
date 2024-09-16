@@ -100,7 +100,7 @@ const page = () => {
                         <Link
                           key={index} // Unique key for each item
                           href={`/group/${group._id}`}
-                          className="rounded-lg w-24 h-32 flex-shrink-0 flex flex-col justify-center items-center p-2 bg-white"
+                          className="rounded-lg w-28 h-32 flex-shrink-0 flex flex-col justify-center items-center p-2 bg-white"
                         >
                           <Image
                             src={group.avatar}
@@ -109,7 +109,7 @@ const page = () => {
                             height={70}
                             className="rounded-full"
                           />
-                          <h4 className="text-base font-semibold">
+                          <h4 className="text-base text-center font-semibold">
                             {group.name}
                           </h4>
                         </Link>

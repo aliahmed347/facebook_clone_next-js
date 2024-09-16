@@ -10,6 +10,11 @@ export const leftSidebarItems = [
     url: "/groups",
   },
   {
+    label: "Discover Groups",
+    icon: "/groups.png",
+    url: "/groups/discover",
+  },
+  {
     label: "Saved",
     icon: "/saved.png",
     url: "/saved",
